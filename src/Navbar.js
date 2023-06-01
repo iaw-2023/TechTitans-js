@@ -8,16 +8,18 @@ const Navbar = () => {
     <nav>
       <ul>
       <li className="navbar-logo">
-        <img src={logo} alt="Logo" />
+        <Link to="/">
+          <img src={logo} alt="Logo"/>
+        </Link>
       </li>
         <li>
-          <Link to="/canchas">Canchas</Link>
+          <Link to="/turnos">Reservar</Link>
         </li>
         <li>
-          <Link to="/turnos">Turnos</Link>
+          <Link to="/reservas">Mis Reservas</Link>
         </li>
         <li>
-          <Link to="/categorias">Categorías</Link>
+          <Link to= "/contacto">Contacto</Link>
         </li>
       </ul>
     </nav>
