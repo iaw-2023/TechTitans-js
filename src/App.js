@@ -1,4 +1,3 @@
-import logo from './logo.png';
 import './App.css';
 import Canchas from './Canchas.js'
 
