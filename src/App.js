@@ -2,7 +2,10 @@ import './App.css';
 import Canchas from './Canchas.js'
 import Turnos from './Turnos.js'
 import Categorias from './Categorias'
+import Reservas from './Reservas.js'
 import Navbar from './Navbar';
+import Contacto from './Contacto';
+import Carrito from './Carrito';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 
 function App() {
@@ -14,6 +17,9 @@ function App() {
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/turnos" element={<Turnos />} />
         <Route path="/categorias" element={<Categorias />} />
+        <Route path="/reservas" element={<Reservas />} />
+        <Route path="/contacto" element={<Contacto />} />
+        <Route path="/carrito" element={<Carrito />} />
       </Routes>
     </Router>
     
