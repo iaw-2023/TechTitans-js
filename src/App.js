@@ -1,8 +1,8 @@
 import './App.css';
 import Canchas from './Canchas.js'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 
-const App = () => {
+function App() {
   
   return (
     <Router>

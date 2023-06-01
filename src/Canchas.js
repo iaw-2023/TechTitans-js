@@ -25,9 +25,11 @@ const Canchas = () => {
         {canchas.map(cancha => (
           <div key={cancha.id}>
             <h3>{cancha.nombre}</h3>
+            <p>Categoria: {cancha.id_categoria}</p>
             <p>Precio: {cancha.precio}</p>
-            <p>Superficie: {cancha.horario}</p>
+            <p>Superficie: {cancha.superficie}</p>
             <p>Jugadores: {cancha.cant_jugadores}</p>
+            <p>Techo: {cancha.techo ? 'Si' : 'No'}</p>
           </div>
         ))}
       </div>
