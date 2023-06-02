@@ -1,6 +1,5 @@
 import {API} from './config.js';
 import React, { useEffect, useState } from 'react';
-import './App.css';
 
 const Reservas = () => {
     const [reservas, setReservas] = useState([]);

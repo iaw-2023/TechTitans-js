@@ -1,11 +1,10 @@
-import './App.css';
 import Canchas from './Canchas.js'
 import Turnos from './Turnos.js'
 import Categorias from './Categorias'
 import Reservas from './Reservas.js'
-import Navbar from './Navbar';
+import Navbar from './components/navbar/Navbar.js';
 import Contacto from './Contacto';
-import Carrito from './Carrito';
+import Carrito from './components/carrito/Carrito.js';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 
 function App() {

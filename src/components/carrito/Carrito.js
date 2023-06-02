@@ -1,6 +1,5 @@
-import {API} from './config.js';
+import {API} from '../../config.js';
 import React, { useEffect, useState } from 'react';
-import './App.css';
     
     const Carrito = () => {
         const [carrito, setCarrito] = useState([]);
@@ -22,7 +21,6 @@ import './App.css';
     return(
         <div>
         <h2>Carrito</h2>
-            
       </div>
     );
 }

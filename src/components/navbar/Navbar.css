@@ -11,6 +11,11 @@ nav {
     height: 50px;
     margin-right: 10px;
   }
+
+  .carrito-logo img {
+    height: 50px;
+    margin-right: 10px;
+  }
   
   ul {
     list-style-type: none;

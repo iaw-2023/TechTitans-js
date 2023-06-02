@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
-import logo from './logo.png';
+import logo from '../../logo.png';
+import carrito from '../../components/carrito/carrito.png';
 
 const Navbar = () => {
   return (
@@ -20,6 +21,11 @@ const Navbar = () => {
         </li>
         <li>
           <Link to= "/contacto">Contacto</Link>
+        </li>
+        <li className="carrito-logo">
+        <Link to="/carrito">
+          <img src={carrito} alt="Carrito"/>
+        </Link>
         </li>
       </ul>
     </nav>
