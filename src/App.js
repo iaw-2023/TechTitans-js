@@ -6,6 +6,7 @@ import Navbar from './components/navbar/Navbar.js';
 import Contacto from './Contacto';
 import Carrito from './components/carrito/Carrito.js';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
+import Main from './components/main.js';
 
 function App() {
   
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Main />} />
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/turnos" element={<Turnos />} />
         <Route path="/categorias" element={<Categorias />} />
