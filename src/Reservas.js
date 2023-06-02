@@ -7,7 +7,7 @@ const Reservas = () => {
     useEffect(() => {
       const fetchReservas  = async () => {
         try {
-          const response = await fetch(API+'/reservas');
+          const response = await fetch(API+'/reservas/misReservas/raul@gmail.com');
           const data = await response.json();
           setReservas(data);
         } catch (error) {
