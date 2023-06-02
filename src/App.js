@@ -1,6 +1,6 @@
 import Canchas from './Canchas.js'
 import Turnos from './Turnos.js'
-import Categorias from './Categorias'
+import Categorias from './components/categoria/Categorias.js'
 import Reservas from './Reservas.js'
 import Navbar from './components/navbar/Navbar.js';
 import Contacto from './Contacto';
@@ -16,8 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/canchas" element={<Canchas />} />
-        <Route path="/turnos" element={<Turnos />} />
-        <Route path="/categorias" element={<Categorias />} />
+        <Route path="/reservar" element={<Categorias />} />
         <Route path="/misReservas/:email" element={<Reservas />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/carrito" element={<Carrito />} />

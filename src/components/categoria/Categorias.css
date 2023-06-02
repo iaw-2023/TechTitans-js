@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+}
+
+.imagen-grid {
+  display: grid;
+  place-content: center;
+  grid-template-columns: repeat(3, 1fr); /* Ajusta el número de columnas según tus necesidades */
+  /*grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes 
+  width: 1200px;
+  height: auto;*/
+}
+
+.imagen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px; /* Ajusta el valor para reducir el espacio entre foto y foto */
+}
+
+.imagen-item img {
+  width: 50%;
+  height: auto;
+  border-radius: 8px;
+}

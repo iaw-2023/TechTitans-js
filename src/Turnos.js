@@ -16,6 +16,7 @@ const Turnos = () => {
       };
   
       fetchTurnos();
+      console.log(turnos);
     }, []);
   
     return (
