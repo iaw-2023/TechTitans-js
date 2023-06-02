@@ -1,14 +1,15 @@
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import React from 'react';
-import './CarouselFotos.css';
 import imagen1 from '../../components/imagenes/bombonera.png';
 import imagen2 from '../../components/imagenes/bombonerita.jpg';
 import imagen3 from '../../components/imagenes/padel.jpg';
+import './CarouselFotos.css';
 
 const CarouselFotos = () => {
     return (
       <Carousel>
+        
         <div>
           <img src={imagen1} alt="Imagen 1" />
           <p className="legend">EL TEMPLO</p>
