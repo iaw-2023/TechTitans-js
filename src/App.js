@@ -18,7 +18,7 @@ function App() {
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/turnos" element={<Turnos />} />
         <Route path="/categorias" element={<Categorias />} />
-        <Route path="/reservas/misReservas/raul@gmail.com" element={<Reservas />} />
+        <Route path="/misReservas/:email" element={<Reservas />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/carrito" element={<Carrito />} />
       </Routes>

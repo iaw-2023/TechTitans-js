@@ -1,14 +1,19 @@
 import {API} from './config.js';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Reservas = () => {
     const [reservas, setReservas] = useState([]);
-  
+      const location = useLocation();
+      const email = location.pathname.split('/')[2];
+    
     useEffect(() => {
+      console.log(email);
       const fetchReservas  = async () => {
         try {
-          const response = await fetch(API+'/reservas/misReservas/raul@gmail.com');
+          const response = await fetch(API+'/reservas/misReservas/'+ email);
           const data = await response.json();
+          console.log(data);
           setReservas(data);
         } catch (error) {
           console.error(error);
