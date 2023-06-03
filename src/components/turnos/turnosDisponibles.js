@@ -19,7 +19,7 @@ const TurnosDisponibles = () => {
     const fetchTurnos = async () => {
       try {
         const response = await fetch(API + 'turnos/dispCat/'+categoriaId);
-        console.log(response);
+        console.log(API + 'turnos/dispCat/'+categoriaId);
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
