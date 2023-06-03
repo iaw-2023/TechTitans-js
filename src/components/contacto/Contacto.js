@@ -1,22 +1,4 @@
-import {API} from '../../config.js';
-import React, { useEffect, useState } from 'react';
-    
-    const Contacto = () => {
-        const [contacto, setContacto] = useState([]);
-      
-        useEffect(() => {
-          const fetchContacto  = async () => {
-            try {
-              const response = await fetch(API+'/contacto');
-              const data = await response.json();
-              setContacto(data);
-            } catch (error) {
-              console.error(error);
-            }
-          };
-      
-          fetchContacto();
-        }, []);
+const Contacto = () => {
 
     return(
         <div>

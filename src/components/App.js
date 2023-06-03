@@ -3,7 +3,7 @@ import Categorias from './categoria/Categorias.js'
 import Reservas from './mis-reservas/Reservas.js'
 import Navbar from './navbar/Navbar.js';
 import Contacto from './contacto/Contacto.js';
-/*import Carrito from './carrito/Carrito.jsx';*/
+import Carrito from './carrito/Carrito.js';
 /*
 cuando ande el carrito agregar: 
         <Route path="/carrito" element={<Carrito />} />
@@ -21,9 +21,10 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/reservar" element={<Categorias />} />
-        <Route path="/reservar/cat" element={<TurnosDisponibles />} />
+        <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
         <Route path="/misReservas/:email" element={<Reservas />} />
         <Route path="/contacto" element={<Contacto />} />
+        <Route path="/carrito" element={<Carrito />} />
       </Routes>
     </Router>
     

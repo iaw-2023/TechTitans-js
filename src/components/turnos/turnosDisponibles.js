@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { Link } from 'react-router-dom';
 
 const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
@@ -16,7 +17,7 @@ const TurnosDisponibles = () => {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch(API + 'turnos/Futbol');
+        const response = await fetch(API + 'turnos/dispCat/1');
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
@@ -40,6 +41,7 @@ const TurnosDisponibles = () => {
   };
 
   const confirmarReserva = () => {
+    setSelectedTurno(null);
     setReservaRealizada(true);
   };
 
@@ -59,7 +61,14 @@ const TurnosDisponibles = () => {
                 <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
                   Ver Detalles
                 </Button>
-                <Button variant="success" onClick={confirmarReserva}>
+                <Button
+                  variant="success"
+                  onClick={() => {
+                    setSelectedTurno(null);
+                    setReservaRealizada(true);
+                  }}
+                  className="mr-2"
+                >
                   Reservar
                 </Button>
               </Card.Body>
@@ -86,6 +95,9 @@ const TurnosDisponibles = () => {
           <Button variant="secondary" onClick={closeModal}>
             Cerrar
           </Button>
+          <Button variant="success" onClick={confirmarReserva}>
+            Reservar
+          </Button>
         </Modal.Footer>
       </Modal>
 
@@ -98,8 +110,12 @@ const TurnosDisponibles = () => {
           {/* Otros detalles de la reserva */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary">Ir al Carrito</Button>
-          <Button variant="success">Seguir reservando turnos</Button>
+          <Link to="/carrito">
+            <Button variant="primary">Ir al Carrito</Button>
+          </Link>
+          <Link to="/reservar">
+            <Button variant="success">Seguir reservando turnos</Button>
+          </Link>
         </Modal.Footer>
       </Modal>
     </div>

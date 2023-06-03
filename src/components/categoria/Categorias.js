@@ -52,7 +52,7 @@ const Categoria = () => {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
             >
-              <a href={'http://localhost:3000/reservar'+imagen.link}>
+              <a href={'/turnos/dispCat'+imagen.link}>
                 <img
                   src={imagen.nombre}
                   alt={`Imagen ${index}`}
