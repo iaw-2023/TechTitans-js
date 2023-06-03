@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { API } from '../../config';
-import './turnosDisponibles.css'
+import './turnosDisponibles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
+  const [selectedTurno, setSelectedTurno] = useState(null);
+  const [reservaRealizada, setReservaRealizada] = useState(false);
 
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        /*console.log(API+'turnos/categorias/Futbol');*/
-        const response = await fetch(API+'turnos'); /* turnos/categorias/Futbol*/
+        const response = await fetch(API + 'turnos');
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
@@ -24,27 +30,78 @@ const TurnosDisponibles = () => {
     fetchTurnos();
   }, []);
 
+  const openModal = (turno) => {
+    setSelectedTurno(turno);
+  };
+
+  const closeModal = () => {
+    setSelectedTurno(null);
+    setReservaRealizada(false);
+  };
+
+  const confirmarReserva = () => {
+    setReservaRealizada(true);
+  };
+
   return (
-    <div class="table-responsive">
+    <div className="card-container">
       <h1>Turnos Disponibles</h1>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID cancha:</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-          </tr>
-        </thead>
-        <tbody>
-          {turnos.map((turno) => (
-            <tr key={turno.id}>
-              <td>{turno.id_cancha}</td>
-              <td>{new Date(turno.fecha_turno).toLocaleDateString('es-ES')}</td>
-              <td>{turno.hora_turno}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Row>
+        {turnos.map((turno) => (
+          <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
+            <Card className="card">
+              <Card.Body>
+                <Card.Title>ID Cancha: {turno.id_cancha}</Card.Title>
+                <Card.Text>
+                  Fecha: {new Date(turno.fecha_turno).toLocaleDateString('es-ES')}
+                </Card.Text>
+                <Card.Text>Hora: {turno.hora_turno}</Card.Text>
+                <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
+                  Ver Detalles
+                </Button>
+                <Button variant="success" onClick={confirmarReserva}>
+                  Reservar
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      <Modal show={selectedTurno !== null} onHide={closeModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalles del Turno</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTurno && (
+            <div>
+              <p>ID Cancha: {selectedTurno.id_cancha}</p>
+              <p>Fecha: {new Date(selectedTurno.fecha_turno).toLocaleDateString('es-ES')}</p>
+              <p>Hora: {selectedTurno.hora_turno}</p>
+              {/* Otros detalles del turno */}
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeModal}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={reservaRealizada} onHide={closeModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>¡Tomamos Nota!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Tu reserva se encuentra en el carrito.</p>
+          {/* Otros detalles de la reserva */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary">Ir al Carrito</Button>
+          <Button variant="success">Seguir reservando turnos</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

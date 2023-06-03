@@ -1,32 +1,11 @@
-.turnos-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .turnos-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .turnos-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .turnos-table th,
-  .turnos-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .turnos-table th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-  }
-  
-  .turnos-table tbody tr:hover {
-    background-color: #f8f8f8;
-  }
-  
+.card-container {
+  margin: 40px;
+}
+
+.row {
+  margin-bottom: 20px;
+}
+
+.mr-2 {
+  margin-right: 10px;
+}
