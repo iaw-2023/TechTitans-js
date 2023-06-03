@@ -7,15 +7,17 @@ const Reservas = () => {
   useEffect(() => {
     const fetchReservas = async () => {
       try {
-        const response = await fetch(API+'/reservas/misReservas/raul@gmail.com');
+        const response = await fetch(API+'reservas/misReservas/raul@gmail.com');
         const data = await response.json();
         setReservas(data);
+        console.log(data)
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchReservas();
+    console.log(reservas);
   }, []);
 
   return (
@@ -23,10 +25,10 @@ const Reservas = () => {
       <h2>Reservas de raul@gmail.com</h2>
       {reservas.map(reserva => (
         <div key={reserva.id}>
-          <h3>{reserva.id}</h3>
-          <p>Cliente: {reserva.email_cliente}</p>
-          <p>Fecha: {new Date(reserva.fecha_reserva).toLocaleDateString('es-ES')}</p>
-          <p>Hora: {reserva.hora_reserva}</p>
+          <h3>{reserva.reserva.id}</h3>
+          <p>Cliente: {reserva.reserva.email_cliente}</p>
+          <p>Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-ES')}</p>
+          <p>Hora: {reserva.reserva.hora_reserva}</p>
         </div>
       ))}
     </div>
