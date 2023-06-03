@@ -49,7 +49,7 @@ const TurnosDisponibles = () => {
       <Row>
         {turnos.map((turno) => (
           <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
-            <Card className="card">
+            <Card className="card border-primary mb-3 text-bg-dark mb-3">
               <Card.Body>
                 <Card.Title>ID Cancha: {turno.id_cancha}</Card.Title>
                 <Card.Text>
