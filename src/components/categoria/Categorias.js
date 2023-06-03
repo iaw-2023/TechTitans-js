@@ -9,19 +9,24 @@ import padel from '../../components/imagenes/padel.png';
 const Categoria = () => {
   const imagenes = [
     {
-      nombre: futbol
+      nombre: futbol,
+      link: "/Futbol"
     },
     {
-      nombre: tenis
+      nombre: tenis,
+      link: "/Tenis"
     },
     {
-      nombre: basquet
+      nombre: basquet,
+      link: "/Basquet"
     },
     {
-      nombre: padel
+      nombre: padel,
+      link: "/Padel"
     },
     {
-      nombre: handball
+      nombre: handball,
+      link: "/Handball"
     }
   ];
 
@@ -47,11 +52,13 @@ const Categoria = () => {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
             >
-              <img
-                src={imagen.nombre}
-                alt={`Imagen ${index}`}
-                style={{ filter: hoveredIndex === index ? 'none' : 'grayscale(100%)' }}
-              />
+              <a href={'http://localhost:3000/reservar'+imagen.link}>
+                <img
+                  src={imagen.nombre}
+                  alt={`Imagen ${index}`}
+                  style={{ filter: hoveredIndex === index ? 'none' : 'grayscale(100%)' }}
+                />
+              </a>
             </div>
           ))}
         </div>

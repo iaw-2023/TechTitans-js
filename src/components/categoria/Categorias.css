@@ -9,7 +9,7 @@
   display: grid;
   place-content: center;
   grid-template-columns: repeat(3, 1fr); /* Ajusta el número de columnas según tus necesidades */
-  /*grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes 
+  grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes 
   width: 1200px;
   height: auto;*/
 }
