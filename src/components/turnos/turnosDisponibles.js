@@ -24,6 +24,7 @@ const TurnosDisponibles = () => {
           throw new Error('Error al obtener los turnos');
         }
         const data = await response.json();
+        console.log(data);
         setTurnos(data);
       } catch (error) {
         console.error('Error al obtener los turnos', error);
@@ -55,11 +56,12 @@ const TurnosDisponibles = () => {
           <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
             <Card className="card border-primary mb-3 text-bg-dark mb-3">
               <Card.Body>
-                <Card.Title>ID Cancha: {turno.id_cancha}</Card.Title>
+                <Card.Title>{turno.cancha.nombre}</Card.Title>
                 <Card.Text>
                   Fecha: {new Date(turno.fecha_turno).toLocaleDateString('es-ES')}
                 </Card.Text>
                 <Card.Text>Hora: {turno.hora_turno}</Card.Text>
+                <Card.Text>Precio: ${turno.cancha.precio}</Card.Text>
                 <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
                   Ver Detalles
                 </Button>
@@ -86,10 +88,13 @@ const TurnosDisponibles = () => {
         <Modal.Body>
           {selectedTurno && (
             <div>
-              <p>ID Cancha: {selectedTurno.id_cancha}</p>
+              <p>{selectedTurno.cancha.nombre}</p>
               <p>Fecha: {new Date(selectedTurno.fecha_turno).toLocaleDateString('es-ES')}</p>
               <p>Hora: {selectedTurno.hora_turno}</p>
-              {/* Otros detalles del turno */}
+              <p>Precio: ${selectedTurno.cancha.precio}</p>
+              <p>Superficie: {selectedTurno.cancha.superficie}</p>
+              <p>Techada: {selectedTurno.cancha.techo ? 'Sí' : 'No'}</p>
+              <p>Cantidad de jugadores: {selectedTurno.cancha.cant_jugadores}</p>
             </div>
           )}
         </Modal.Body>
