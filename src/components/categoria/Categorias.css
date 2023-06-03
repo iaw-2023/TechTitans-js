@@ -2,27 +2,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 100vh;
 }
 
 .imagen-grid {
   display: grid;
   place-content: center;
+  justify-content: center;
   grid-template-columns: repeat(3, 1fr); /* Ajusta el número de columnas según tus necesidades */
-  grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes 
-  width: 1200px;
-  height: auto;*/
+  grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes */
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto; /* Centra el contenedor en el medio horizontal */
 }
 
 .imagen-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 15px; /* Ajusta el valor para reducir el espacio entre foto y foto */
 }
 
 .imagen-item img {
-  width: 50%;
+  width: 100%; /* Modifica el ancho al 100% para que se ajuste al contenedor */
   height: auto;
   border-radius: 8px;
 }
