@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../../components/imagenes/logo.png';
-import carrito from '../../components/carrito/carrito.png';
+import carrito from '../../components/carritoEjemplo/carrito.png';
 
 const Navbar = () => {
   return (
