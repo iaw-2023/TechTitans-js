@@ -18,7 +18,7 @@ function App() {
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/reservar" element={<Categorias />} />
         <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
-        <Route path="/misReservas" element={<Reservas />} />
+        <Route path="/misReservas/:email" element={<Reservas />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/carrito" element={<Carrito />} />
       </Routes>
