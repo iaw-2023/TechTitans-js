@@ -1,10 +1,10 @@
 nav {
-    background-color: #f2f2f2;
+    background-color: #ffffff;
     padding: 10px;
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content: center;/* comentar para mostrar a deba si le gusta a la izquierda o al medio*/
+    justify-content: center;
   }
   
   .navbar-logo img {
@@ -27,10 +27,44 @@ nav {
   
   li {
     margin-right: 10px;
+    color: inherit;
+  }
+
+  #reservar {
+    /* Agrega estilos específicos para el elemento li */
+    /* Ejemplo: */
+    background-color: #ffffff;
+    padding: 10px;
   }
   
+  #reservar .nav-link {
+    /* Agrega estilos específicos para el enlace dentro del li */
+    /* Ejemplo: */
+    color: #333;
+    font-weight: bold;
+    font-family: "Calibri", Arial, sans-serif;
+    font-size: 26px;
+  }
+  
+  #reservar .nav-link:hover {
+    /* Agrega estilos específicos para el enlace al pasar el mouse */
+    /* Ejemplo: */
+    background-color: #333;
+    color: #fff;
+  }
+
+  .nav-item .nav-link {
+    /* Estilo para el texto del enlace */
+    color: #333;
+    font-size: 26px;
+    font-family: "Calibri", Arial, sans-serif;
+    font-weight: bold;
+    /* Otros estilos... */
+  }
+
   li:last-child {
     margin-right: 0;
+    color: #333 !important;
   }
   
   a {

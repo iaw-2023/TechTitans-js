@@ -13,14 +13,14 @@ const Navbar = () => {
           <img src={logo} alt="Logo"/>
         </Link>
       </li>
-        <li>
-          <Link to="/reservar">Reservar</Link>
+      <li id="reservar" className="nav-item">
+        <Link className="nav-link" to="/reservar">Reservar</Link>
+      </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="misReservas/raul@gmail.com">Mis Reservas</Link>
         </li>
-        <li>
-          <Link to="misReservas/raul@gmail.com">Mis Reservas</Link>
-        </li>
-        <li>
-          <Link to= "/contacto">Contacto</Link>
+        <li className="nav-item">
+          <Link className="nav-link" to= "/contacto">Contacto</Link>
         </li>
         <li className="carrito-logo">
         <Link to="/carrito">

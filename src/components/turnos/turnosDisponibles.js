@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API } from '../../config';
 import './turnosDisponibles.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
@@ -24,9 +25,9 @@ const TurnosDisponibles = () => {
   }, []);
 
   return (
-    <div>
+    <div class="table-responsive">
       <h1>Turnos Disponibles</h1>
-      <table >
+      <table class="table">
         <thead>
           <tr>
             <th>ID cancha:</th>
