@@ -16,7 +16,7 @@ const TurnosDisponibles = () => {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch(API + 'turnos');
+        const response = await fetch(API + 'turnos/Futbol');
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
