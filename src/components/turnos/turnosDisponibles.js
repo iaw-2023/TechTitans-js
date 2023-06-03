@@ -7,17 +7,19 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
   const [selectedTurno, setSelectedTurno] = useState(null);
   const [reservaRealizada, setReservaRealizada] = useState(false);
+  const {categoriaId} = useParams();
 
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch(API + 'turnos/dispCat/1');
+        const response = await fetch(API + 'turnos/dispCat/'+categoriaId);
+        console.log(response);
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
@@ -29,7 +31,7 @@ const TurnosDisponibles = () => {
     };
 
     fetchTurnos();
-  }, []);
+  }, [categoriaId]);
 
   const openModal = (turno) => {
     setSelectedTurno(turno);
