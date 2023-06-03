@@ -1,12 +1,12 @@
-import Canchas from './Canchas.js'
-import Categorias from './components/categoria/Categorias.js'
-import Reservas from './Reservas.js'
-import Navbar from './components/navbar/Navbar.js';
-import Contacto from './Contacto';
-import Carrito from './components/carrito/Carrito.js';
+import Canchas from './innecesarios/Canchas.js'
+import Categorias from './categoria/Categorias.js'
+import Reservas from './mis-reservas/Reservas.js'
+import Navbar from './navbar/Navbar.js';
+import Contacto from './contacto/Contacto.js';
+import Carrito from './carrito/Carrito.js';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
-import Main from './components/main.js';
-import TurnosDisponibles from './components/turnos/turnosDisponibles.js';
+import Main from './main.js';
+import TurnosDisponibles from './turnos/turnosDisponibles.js';
 
 function App() {
   

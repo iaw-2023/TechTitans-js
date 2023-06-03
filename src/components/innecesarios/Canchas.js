@@ -1,4 +1,4 @@
-import {API} from './config.js';
+import {API} from '../../config.js';
 import React, { useEffect, useState } from 'react';
 
 const Canchas = () => {

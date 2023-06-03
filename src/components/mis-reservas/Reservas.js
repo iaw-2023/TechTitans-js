@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {API} from './config.js';
+import {API} from '../../config.js';
 
 const Reservas = () => {
   const [reservas, setReservas] = useState([]);
