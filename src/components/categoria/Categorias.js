@@ -10,23 +10,23 @@ const Categoria = () => {
   const imagenes = [
     {
       nombre: futbol,
-      link: "/Futbol"
+      link: "/1"
     },
     {
       nombre: tenis,
-      link: "/Tenis"
+      link: "/2"
     },
     {
       nombre: basquet,
-      link: "/Basquet"
+      link: "/3"
     },
     {
       nombre: padel,
-      link: "/Padel"
+      link: "/4"
     },
     {
       nombre: handball,
-      link: "/Handball"
+      link: "/5"
     }
   ];
 
@@ -52,7 +52,7 @@ const Categoria = () => {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
             >
-              <a href={'/turnos/dispCat'+imagen.link}>
+              <a href={'/reservar/dispCat'+imagen.link}>
                 <img
                   src={imagen.nombre}
                   alt={`Imagen ${index}`}
