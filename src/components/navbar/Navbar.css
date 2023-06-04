@@ -1,5 +1,5 @@
 nav {
-    background-color: #ffffff;
+    background-color: transparent;
     padding: 10px;
     text-align: center;
     display: flex;
@@ -31,15 +31,10 @@ nav {
   }
 
   #reservar {
-    /* Agrega estilos específicos para el elemento li */
-    /* Ejemplo: */
-    background-color: #ffffff;
     padding: 10px;
   }
   
   #reservar .nav-link {
-    /* Agrega estilos específicos para el enlace dentro del li */
-    /* Ejemplo: */
     color: #333;
     font-weight: bold;
     font-family: "Calibri", Arial, sans-serif;
@@ -47,24 +42,19 @@ nav {
   }
   
   #reservar .nav-link:hover {
-    /* Agrega estilos específicos para el enlace al pasar el mouse */
-    /* Ejemplo: */
-    /*background-color: #333;*/
-    color: grey;
+    color: rgb(243, 240, 42);
   }
 
   .nav-item .nav-link {
-    /* Estilo para el texto del enlace */
     color: #333;
     font-size: 26px;
     font-family: "Calibri", Arial, sans-serif;
     font-weight: bold;
     padding: 10px;
-    /* Otros estilos... */
   }
 
   .nav-item .nav-link:hover{
-    color:grey;
+    color:rgb(243, 240, 42);
   }
 
   li:last-child {

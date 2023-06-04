@@ -1,7 +1,6 @@
 const Contacto = () => {
-
     return(
-        <div>
+        <>
         <h2>Contacto</h2>
             <h3>WhatsApp</h3>
                 <p>291-123456</p>
@@ -9,7 +8,7 @@ const Contacto = () => {
                 <p>/ReservaTuCancha</p>
             <h3>Instagram</h3>
                 <p>@reservatucancha</p>
-      </div>
+        </>
     );
 }
 

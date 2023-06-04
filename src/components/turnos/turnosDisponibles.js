@@ -50,7 +50,7 @@ const TurnosDisponibles = () => {
 
   return (
     <div className="card-container">
-      <h1>Turnos Disponibles</h1>
+      <h2>Turnos Disponibles</h2>
       <Row>
         {turnos.map((turno) => (
           <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
