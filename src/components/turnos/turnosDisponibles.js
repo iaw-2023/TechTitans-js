@@ -24,7 +24,7 @@ const TurnosDisponibles = () => {
           throw new Error('Error al obtener los turnos');
         }
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setTurnos(data);
       } catch (error) {
         console.error('Error al obtener los turnos', error);
@@ -43,10 +43,13 @@ const TurnosDisponibles = () => {
     setReservaRealizada(false);
   };
 
-  const confirmarReserva = () => {
+  const confirmarReserva = (turno) => {
+    console.log(turno);
     setSelectedTurno(null);
     setReservaRealizada(true);
   };
+
+//Fecha: {new Date(turno.fecha_turno).setDate(this.getDate()-1).toLocaleDateString('es-AR')}
 
   return (
     <div className="card-container">
@@ -58,7 +61,13 @@ const TurnosDisponibles = () => {
               <Card.Body>
                 <Card.Title>{turno.cancha.nombre}</Card.Title>
                 <Card.Text>
-                  Fecha: {new Date(turno.fecha_turno).toLocaleDateString('es-ES')}
+                   Fecha: {(() => {
+                    const fecha = new Date(turno.fecha_turno);
+                    fecha.setDate(fecha.getDate() + 1); // Restar un día a la fecha
+
+                    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                  return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                  })()}
                 </Card.Text>
                 <Card.Text>Hora: {turno.hora_turno}</Card.Text>
                 <Card.Text>Precio: ${turno.cancha.precio}</Card.Text>
@@ -68,8 +77,7 @@ const TurnosDisponibles = () => {
                 <Button
                   variant="success"
                   onClick={() => {
-                    setSelectedTurno(null);
-                    setReservaRealizada(true);
+                    confirmarReserva(turno);
                   }}
                   className="mr-2"
                 >
@@ -89,7 +97,12 @@ const TurnosDisponibles = () => {
           {selectedTurno && (
             <div>
               <p>{selectedTurno.cancha.nombre}</p>
-              <p>Fecha: {new Date(selectedTurno.fecha_turno).toLocaleDateString('es-ES')}</p>
+              <p>Fecha: {(() => {
+                    const fecha = new Date(selectedTurno.fecha_turno);
+                    fecha.setDate(fecha.getDate() + 1);
+                    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                  return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                  })()}</p>
               <p>Hora: {selectedTurno.hora_turno}</p>
               <p>Precio: ${selectedTurno.cancha.precio}</p>
               <p>Superficie: {selectedTurno.cancha.superficie}</p>
@@ -101,9 +114,6 @@ const TurnosDisponibles = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
             Cerrar
-          </Button>
-          <Button variant="success" onClick={confirmarReserva}>
-            Reservar
           </Button>
         </Modal.Footer>
       </Modal>
