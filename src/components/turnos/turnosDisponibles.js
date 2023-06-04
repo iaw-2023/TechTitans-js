@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API } from '../../config';
 import './turnosDisponibles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
 
 const TurnosDisponibles = () => {
@@ -14,25 +10,44 @@ const TurnosDisponibles = () => {
   const [selectedTurno, setSelectedTurno] = useState(null);
   const [reservaRealizada, setReservaRealizada] = useState(false);
   const {categoriaId} = useParams();
+  const [selectedFecha, setSelectedFecha] = useState(null);
 
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch(API + 'turnos/dispCat/'+categoriaId);
-        console.log(API + 'turnos/dispCat/'+categoriaId);
+        let url ;
+        let fechaFiltro;
+        
+        if (selectedFecha!=null) {
+          console.log("fetch con filtro de fecha");
+          const fechaSeleccionada = new Date(selectedFecha);
+          fechaSeleccionada.setDate(fechaSeleccionada.getDate() + 1);
+          fechaFiltro = fechaSeleccionada.toISOString().split('T')[0];
+          url = `${API}turnos/fecha/cat/${fechaFiltro}/${categoriaId}`;
+        }else{
+          console.log("fetch de categoria");
+          url = `${API}turnos/dispCat/${categoriaId}`;
+        }
+  
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
+  
         const data = await response.json();
-        console.log(data);
         setTurnos(data);
+        console.log(data);
       } catch (error) {
         console.error('Error al obtener los turnos', error);
       }
     };
-
     fetchTurnos();
-  }, [categoriaId]);
+  }, [categoriaId, selectedFecha]);
+  
+  const handleFechaChange = (e) => {
+    const value = e.target.value;
+    setSelectedFecha(value  ? value : null);
+  };
 
   const openModal = (turno) => {
     setSelectedTurno(turno);
@@ -47,11 +62,19 @@ const TurnosDisponibles = () => {
     setSelectedTurno(null);
     setReservaRealizada(true);
   };
-
+  
   return (
-    <div className="card-container">
+    <div className="card-container" >
       <h2>Turnos Disponibles</h2>
-      <Row>
+      <div className="filter-container">
+      <input
+        type="date"
+        value={selectedFecha || ''}
+        onChange={handleFechaChange}
+      />
+
+      </div>
+      <Row className="justify-content-center">
         {turnos.map((turno) => (
           <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
             <Card className="card border-primary mb-3 text-bg-dark mb-3">
