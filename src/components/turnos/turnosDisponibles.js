@@ -16,16 +16,10 @@ const TurnosDisponibles = () => {
     const fetchTurnos = async () => {
       try {
         let url ;
-        let fechaFiltro;
         
         if (selectedFecha!=null) {
-          console.log("fetch con filtro de fecha");
-          const fechaSeleccionada = new Date(selectedFecha);
-          fechaSeleccionada.setDate(fechaSeleccionada.getDate() + 1);
-          fechaFiltro = fechaSeleccionada.toISOString().split('T')[0];
-          url = `${API}turnos/fecha/cat/${fechaFiltro}/${categoriaId}`;
+          url = `${API}turnos/fecha/cat/${selectedFecha}/${categoriaId}`;
         }else{
-          console.log("fetch de categoria");
           url = `${API}turnos/dispCat/${categoriaId}`;
         }
   
