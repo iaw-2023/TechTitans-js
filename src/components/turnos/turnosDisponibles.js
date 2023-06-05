@@ -58,8 +58,6 @@ const TurnosDisponibles = () => {
     setReservaRealizada(true);
   };
 
-//Fecha: {new Date(turno.fecha_turno).setDate(this.getDate()-1).toLocaleDateString('es-AR')}
-
   return (
     <div className="card-container" >
       <h2>Turnos Disponibles</h2>
@@ -80,8 +78,7 @@ const TurnosDisponibles = () => {
                 <Card.Text>
                    Fecha: {(() => {
                     const fecha = new Date(turno.fecha_turno);
-                    fecha.setDate(fecha.getDate() + 1); // Restar un día a la fecha
-
+                    fecha.setDate(fecha.getDate() + 1); 
                     const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                   return fecha.toLocaleDateString('es-AR', opcionesFecha);
                   })()}

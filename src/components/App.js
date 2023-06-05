@@ -1,4 +1,3 @@
-import Canchas from './innecesarios/Canchas.js'
 import Categorias from './categoria/Categorias.js'
 import Reservas from './mis-reservas/Reservas.js'
 import Navbar from './navbar/Navbar.js';
@@ -6,7 +5,8 @@ import Contacto from './contacto/Contacto.js';
 import Carrito from './carrito/CarritoReservas.js';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 import Main from './main.js';
-import TurnosDisponibles from './turnos/turnosDisponibles.js';
+import TurnosDisponibles from './turnos/turnosDisponibles';
+//import { ListadoTurnos } from './turnos/listadoTurnos.jsx';
 
 function App() {
   
@@ -15,7 +15,6 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/canchas" element={<Canchas />} />
         <Route path="/reservar" element={<Categorias />} />
         <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
         <Route path="/misReservas/:email" element={<Reservas />} />
