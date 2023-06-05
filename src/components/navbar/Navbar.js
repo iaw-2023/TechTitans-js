@@ -17,7 +17,7 @@ const Navbar = () => {
         <Link className="nav-link" to="/reservar">Reservar</Link>
       </li>
         <li className="nav-item">
-          <Link className="nav-link" to="misReservas/raul@gmail.com">Mis Reservas</Link>
+          <Link className="nav-link" to="/misReservas">Mis Reservas</Link>
         </li>
         <li className="nav-item">
           <Link className="nav-link" to= "/contacto">Contacto</Link>
