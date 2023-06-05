@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
-import bosters from '../../components/imagenes/bosters.jpg';
+import bosters from '../../components/imagenes/bosters.png';
 const Contacto = () => {
   return (
     <div className="text-center">
@@ -9,10 +9,9 @@ const Contacto = () => {
   <div className="mb-3">
     <a className="icon-link" href="https://api.whatsapp.com/" target="_blank" rel="noopener noreferrer">
       <FontAwesomeIcon icon={faWhatsapp} className="bi" aria-hidden="true" />
-      2921231199
+      1977-2000-2003
     </a>
   </div>
-
   <div className="mb-3">
     <a className="icon-link" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
       <FontAwesomeIcon icon={faInstagram} className="bi" aria-hidden="true" />
