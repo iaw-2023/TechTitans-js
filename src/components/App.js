@@ -6,10 +6,12 @@ import Carrito from './carrito/CarritoReservas.js';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 import Main from './main.js';
 import TurnosDisponibles from './turnos/turnosDisponibles';
+import { CarritoProvider } from '../context/ShoppingCartContext';
 
 function App() {
   
   return (
+    <CarritoProvider>
       <Router>
         <Navbar />
         <Routes>
@@ -21,6 +23,7 @@ function App() {
           <Route path="/carrito" element={<Carrito />} />
         </Routes>
       </Router>
+      </CarritoProvider>
   );
   };
   

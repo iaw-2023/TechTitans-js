@@ -1,0 +1,77 @@
+import React, { useState } from 'react';
+import BotonBorrar from '../botones/BotonBorrar';
+import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
+//import '../css-styles/card-carrito.css';
+//import '../css-styles/margin.css';
+
+const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
+    const [selectedTurno, setSelectedTurno] = useState(null);
+    const { turno_id, fecha_turno, hora_turno, cancha } = turno;
+    
+    const openModal = (turno) => {
+        setSelectedTurno(turno);
+      };
+    
+      const closeModal = () => {
+        setSelectedTurno(null);
+      };
+    
+    return (
+        <div>
+            <Row className="justify-content-center">
+                <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
+                    <Card className="card border-primary mb-3 text-bg-dark mb-3">
+                    <Card.Body>
+                        <Card.Title>{cancha.nombre}</Card.Title>
+                        <Card.Text>
+                        Fecha: {(() => {
+                            const fecha = new Date(fecha_turno);
+                            fecha.setDate(fecha.getDate() + 1); 
+                            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                            return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                        })()}
+                        </Card.Text>
+                        <Card.Text>Hora: {hora_turno}</Card.Text>
+                        <Card.Text>Precio: ${cancha.precio}</Card.Text>
+                        <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
+                        Ver Detalles
+                        </Button>
+                        
+                        <   BotonBorrar onClick={confirmarEliminarElemento} />
+                    </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            <Modal show={selectedTurno !== null} onHide={closeModal}>
+            <Modal.Header closeButton>
+            <Modal.Title>Detalles del Turno</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            {selectedTurno && (
+                <div>
+                <p>{selectedTurno.cancha.nombre}</p>
+                <p>Fecha: {(() => {
+                        const fecha = new Date(selectedTurno.fecha_turno);
+                        fecha.setDate(fecha.getDate() + 1);
+                        const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                    })()}</p>
+                <p>Hora: {selectedTurno.hora_turno}</p>
+                <p>Precio: ${selectedTurno.cancha.precio}</p>
+                <p>Superficie: {selectedTurno.cancha.superficie}</p>
+                <p>Techada: {selectedTurno.cancha.techo ? 'Sí' : 'No'}</p>
+                <p>Cantidad de jugadores: {selectedTurno.cancha.cant_jugadores}</p>
+                </div>
+            )}
+            </Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={closeModal}>
+                Cerrar
+            </Button>
+            </Modal.Footer>
+            </Modal>
+    </div>
+    );
+    };
+      
+export default TurnoCarrito;

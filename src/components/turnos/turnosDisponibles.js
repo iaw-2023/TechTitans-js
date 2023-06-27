@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import { API } from '../../config';
 import './turnosDisponibles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
+import { CarritoContexto } from '../../context/ShoppingCartContext';
 
 const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
   const [selectedTurno, setSelectedTurno] = useState(null);
-  const [reservaRealizada, setReservaRealizada] = useState(false);
+  const [modalReservaRealizada, setModalReservaRealizada] = useState(false);
   const {categoriaId} = useParams();
   const [selectedFecha, setSelectedFecha] = useState(null);
+
+  const carritoContexto = useContext(CarritoContexto);
+  const { agregarItem} = carritoContexto;
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -49,13 +53,14 @@ const TurnosDisponibles = () => {
 
   const closeModal = () => {
     setSelectedTurno(null);
-    setReservaRealizada(false);
+    setModalReservaRealizada(false);
   };
 
   const confirmarReserva = (turno) => {
-    console.log(turno);
+    console.log("turno ", turno, "id ", turno.id);
+    agregarItem(turno.id, turno);
     setSelectedTurno(null);
-    setReservaRealizada(true);
+    setModalReservaRealizada(true);
   };
 
   return (
@@ -132,13 +137,12 @@ const TurnosDisponibles = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={reservaRealizada} onHide={closeModal}>
+      <Modal show={modalReservaRealizada} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>¡Tomamos Nota!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>Tu reserva se encuentra en el carrito.</p>
-          {/* Otros detalles de la reserva */}
         </Modal.Body>
         <Modal.Footer>
           <Link to="/carrito">

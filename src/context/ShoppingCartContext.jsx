@@ -1,6 +1,6 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState , useEffect } from "react";
 
-export const CarritoContexto = createContext();
+export const CarritoContexto = createContext(null);
 
 const CarritoProvider = ({ children }) => {
   const [carrito, setCarrito] = useState(() => {
@@ -19,16 +19,17 @@ const CarritoProvider = ({ children }) => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
-  const agregarItem = (productoId, producto) => {
+  const agregarItem = (turnoId, turno) => {
+    console.log("arrivba"+turnoId+ "sda"+ turno)
     const productoExistente = carrito.find(
-      (item) => item.producto === productoId
+      (item) => item.turno === turnoId
     );
-  
+    
     if (productoExistente) {
       const carritoActualizado = carrito.map((item) => {
-        if (item.producto === productoId) {
+        if (item.turno === turnoId) {
           return {
-            producto: item.producto
+            turno: turnoId, ...turno,
           };
         } else {
           return item;
@@ -38,7 +39,7 @@ const CarritoProvider = ({ children }) => {
       setCarrito(carritoActualizado);
     } else {
       const itemNuevo = {
-        producto: productoId
+        turno: turnoId, ...turno,
       };
   
       setCarrito([...carrito, itemNuevo]);
@@ -64,4 +65,5 @@ const CarritoProvider = ({ children }) => {
   );
 };
 
-export { CarritoProvider, CarritoContexto };
+export { CarritoProvider };
+//export { CarritoProvider, CarritoContexto };
