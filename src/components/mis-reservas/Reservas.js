@@ -62,7 +62,7 @@ const Reservas = () => {
                 <h3 className="card-title">{reserva.reserva.id}</h3>
                 <p className="card-text">Cliente: {reserva.reserva.email_cliente}</p>
                 <p className="card-text">
-                  Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-ES')}
+                  Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
                 </p>
                 <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
                 <p className="card-text">
