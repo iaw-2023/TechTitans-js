@@ -1,5 +1,4 @@
 import Categorias from './categoria/Categorias.js'
-import Reservas from './mis-reservas/Reservas.js'
 import Navbar from './navbar/Navbar.js';
 import Contacto from './contacto/Contacto.js';
 import Carrito from './carrito/CarritoReservas.js';
@@ -18,7 +17,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/reservar" element={<Categorias />} />
           <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
-          <Route path="/misReservas" element={<Reservas />} />
+          
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/carrito" element={<Carrito />} />
         </Routes>
