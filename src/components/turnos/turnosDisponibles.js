@@ -64,7 +64,7 @@ const TurnosDisponibles = () => {
   };
 
   return (
-    <div className="card-container" >
+    <div className="card-container" style={{padding:'5vh'}} >
       <h2>Turnos Disponibles</h2>
       <div className="filter-container">
       <input
