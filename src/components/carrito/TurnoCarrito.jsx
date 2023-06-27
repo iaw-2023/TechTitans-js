@@ -33,8 +33,8 @@ const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
                         <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
                         Ver Detalles
                         </Button>
-                        
-                        <   BotonBorrar onClick={confirmarEliminarElemento} />
+                        <button type="button" class="btn btn-danger" onClick={confirmarEliminarElemento}>
+                         Borrar turno</button>
                     </Card.Body>
                     </Card>
             <Modal show={selectedTurno !== null} onHide={closeModal}>

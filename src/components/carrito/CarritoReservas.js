@@ -181,22 +181,22 @@ const CarritoReservas = () => {
           </div>
         </Card.Body>
       </div>
-      <div>
-              <Card className="card border-primary mb-3 text-bg-dark mb-3">
-                <div>
-                  <div className="precio-container">
-                    <p className="precio-total">PRECIO TOTAL: </p>
-                    <p className="precio-total-2">${obtenerPrecio()}</p>
-                  </div>
-                  <div className="boton-carrito">
-                    <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
-                  </div>
-                  <div className="boton-carrito">
-                    <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
-                  </div>
-                </div>
-              </Card>
+      <div className="d-flex align-items-center justify-content-center">
+        <Card className="card border-primary mb-3 text-bg-dark mb-3" style={{padding : '5vh'}}>
+          <div className="justify-content-center">
+            <div className="precio-container">
+              <p className="precio-total">PRECIO TOTAL: </p>
+              <p className="precio-total-2">${obtenerPrecio()}</p>
             </div>
+            <div className="boton-carrito">
+              <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
+            </div>
+            <div className="boton-carrito">
+              <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
+            </div>
+          </div>
+        </Card>
+      </div>
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Gestionar reserva</Modal.Title>
@@ -227,7 +227,7 @@ const CarritoReservas = () => {
         </Modal.Header>
         <Modal.Body>
           <p>
-            ¿Estás seguro de que deseas eliminar el turno de la "{turnoAEliminar?.cancha.nombre}"?
+            ¿Estás seguro de que deseas eliminar el turno?
           </p>
         </Modal.Body>
         <Modal.Footer>
