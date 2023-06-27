@@ -82,7 +82,7 @@ const CarritoReservas = () => {
     }
 
     const detalles = carrito.map((item) => ({
-      id: item.turno,
+      id_turno: item.turno,
     }));
 
     const body = JSON.stringify({
