@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import BotonBorrar from '../botones/BotonBorrar';
 import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
-//import '../css-styles/card-carrito.css';
-//import '../css-styles/margin.css';
 
 const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
     const [selectedTurno, setSelectedTurno] = useState(null);
@@ -17,10 +15,9 @@ const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
       };
     
     return (
-        <div>
-            <Row className="justify-content-center">
-                <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
-                    <Card className="card border-primary mb-3 text-bg-dark mb-3">
+        <div classname= "card-info-container" style={{padding: '5vh'}}>
+            
+                    <Card className="card border-primary mb-3 text-bg-dark mb-3" >
                     <Card.Body>
                         <Card.Title>{cancha.nombre}</Card.Title>
                         <Card.Text>
@@ -40,8 +37,6 @@ const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
                         <   BotonBorrar onClick={confirmarEliminarElemento} />
                     </Card.Body>
                     </Card>
-                </Col>
-            </Row>
             <Modal show={selectedTurno !== null} onHide={closeModal}>
             <Modal.Header closeButton>
             <Modal.Title>Detalles del Turno</Modal.Title>

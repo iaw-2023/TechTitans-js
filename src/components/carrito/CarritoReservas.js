@@ -8,6 +8,8 @@ import BotonComprarCarrito from '../botones/BotonComprarCarrito';
 import { CarritoContexto } from '../../context/ShoppingCartContext';
 import TurnoCarrito from './TurnoCarrito';
 import Swal from 'sweetalert2';
+import './CarritoReservas.css';
+import {Row, Col} from 'react-bootstrap';
 
 const CarritoReservas = () => {
   const { vaciarCarrito, carrito, eliminarElemento } = useContext(CarritoContexto);
@@ -130,27 +132,27 @@ const CarritoReservas = () => {
   }, [obtenerTurnos]);
 
   const renderProductos = () => {
-
     if (turnosCarrito.length === 0) {
-      return <div className="carrito-fuentes">No hay turnos en el carrito</div>;
+      return <div>No hay turnos en el carrito</div>;
     }
-    
+
     return (
-      <div>
-        {turnosCarrito.map((turno) => {
-          return (
+      <div style={{padding: '5vh'}}>
+      <Row className='custom-row'>
+        {turnosCarrito.map((turno) => (
+          <Col sm={12} md={6} lg={4} key={turno.id}>
             <TurnoCarrito
-              key={turno.id}
               turno={turno}
               confirmarEliminarElemento={() => {
                 setTurnoAEliminar({ id: turno.id });
                 setMostrarConfirmacionEliminar(true);
               }}
             />
-          );
-        })}
+          </Col>
+        ))}
+      </Row>
       </div>
-    );    
+    );
   };
 
   const confirmarVaciarCarrito = () => {
@@ -166,33 +168,35 @@ const CarritoReservas = () => {
   };
 
   return (
-    <div className="page-content">
+    <div>
       <div className="d-flex align-items-center justify-content-center">
-        <h1 className="carrito-titulo">CARRITO DE COMPRAS</h1>
+        <h1>CARRITO DE COMPRAS</h1>
       </div>
-      <div className="producto-card-c">
+      <div>
         <Card.Body>
-          <div className="d-flex justify-content-between">
+          <div>
             <div>
               <div>{renderProductos()}</div>
             </div>
-            <Card className="card-info-container">
-              <div>
-                <div className="precio-container">
-                  <p className="precio-total">PRECIO TOTAL: </p>
-                  <p className="precio-total-2">${obtenerPrecio()}</p>
-                </div>
-                <div className="boton-carrito">
-                  <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
-                </div>
-                <div className="boton-carrito">
-                  <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
-                </div>
-              </div>
-            </Card>
           </div>
         </Card.Body>
       </div>
+      <div>
+              <Card className="card border-primary mb-3 text-bg-dark mb-3">
+                <div>
+                  <div className="precio-container">
+                    <p className="precio-total">PRECIO TOTAL: </p>
+                    <p className="precio-total-2">${obtenerPrecio()}</p>
+                  </div>
+                  <div className="boton-carrito">
+                    <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
+                  </div>
+                  <div className="boton-carrito">
+                    <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
+                  </div>
+                </div>
+              </Card>
+            </div>
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Gestionar reserva</Modal.Title>
