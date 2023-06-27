@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import BotonBorrar from '../botones/BotonBorrar';
-import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Card, Button, Modal } from 'react-bootstrap';
 
 const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
     const [selectedTurno, setSelectedTurno] = useState(null);
@@ -16,27 +15,26 @@ const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
     
     return (
         <div classname= "card-info-container" style={{padding: '5vh'}}>
-            
-                    <Card className="card border-primary mb-3 text-bg-dark mb-3" >
-                    <Card.Body>
-                        <Card.Title>{cancha.nombre}</Card.Title>
-                        <Card.Text>
-                        Fecha: {(() => {
-                            const fecha = new Date(fecha_turno);
-                            fecha.setDate(fecha.getDate() + 1); 
-                            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                            return fecha.toLocaleDateString('es-AR', opcionesFecha);
-                        })()}
-                        </Card.Text>
-                        <Card.Text>Hora: {hora_turno}</Card.Text>
-                        <Card.Text>Precio: ${cancha.precio}</Card.Text>
-                        <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
-                        Ver Detalles
-                        </Button>
-                        <button type="button" class="btn btn-danger" onClick={confirmarEliminarElemento}>
-                         Borrar turno</button>
-                    </Card.Body>
-                    </Card>
+            <Card className="card border-primary mb-3 text-bg-dark mb-3" >
+              <Card.Body>
+                <Card.Title>{cancha.nombre}</Card.Title>
+                  <Card.Text>
+                    Fecha: {(() => {
+                      const fecha = new Date(fecha_turno);
+                      fecha.setDate(fecha.getDate() + 1); 
+                      const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                      return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                    })()}
+                  </Card.Text>
+                  <Card.Text>Hora: {hora_turno}</Card.Text>
+                  <Card.Text>Precio: ${cancha.precio}</Card.Text>
+                  <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
+                    Ver Detalles
+                  </Button>
+                  <button type="button" class="btn btn-danger" onClick={confirmarEliminarElemento}>
+                    Borrar turno</button>
+              </Card.Body>
+            </Card>
             <Modal show={selectedTurno !== null} onHide={closeModal}>
             <Modal.Header closeButton>
             <Modal.Title>Detalles del Turno</Modal.Title>

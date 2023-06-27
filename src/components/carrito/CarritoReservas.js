@@ -33,7 +33,6 @@ const CarritoReservas = () => {
       });
       return;
     }
-
     setMostrarModal(false);
     comprarCarrito();
   };
