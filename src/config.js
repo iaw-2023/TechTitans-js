@@ -1,1 +1,1 @@
-export const API = 'https://tech-titans-q7an-4t9tr33qf-techtitans.vercel.app/rest/';
+export const API = 'https://tech-titans-q7an-j73j2cbew-techtitans.vercel.app/rest/';
