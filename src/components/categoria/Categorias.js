@@ -42,7 +42,9 @@ const Categoria = () => {
 
   return (
     <div>
+      <div className='titulo'>
       <h2>Seleccione la categoria deseada</h2>
+      </div>
       <div className="container">
         <div className="imagen-grid">
           {imagenes.map((imagen, index) => (
