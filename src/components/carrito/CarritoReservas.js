@@ -132,7 +132,7 @@ const CarritoReservas = () => {
 
   const renderProductos = () => {
     if (turnosCarrito.length === 0) {
-      return <div>No hay turnos en el carrito</div>;
+      return <div className='no-reservas'>No hay turnos en el carrito</div>;
     }
 
     return (

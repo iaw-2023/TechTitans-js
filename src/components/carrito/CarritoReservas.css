@@ -56,4 +56,13 @@
   .modal-footer {
     justify-content: space-between;
   }
+
+  .no-reservas {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: 5vh;
+    padding-top: 6vh;
+    padding-bottom: 6vh;
+  }
   
