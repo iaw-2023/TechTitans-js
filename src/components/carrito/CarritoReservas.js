@@ -21,8 +21,16 @@ const CarritoReservas = () => {
   const [turnoAEliminar, setTurnoAEliminar] = useState(null);
 
   const mostrarModalCliente = () => {
-    setMostrarModal(true);
-  };
+    if (carrito.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'No ha agregado ningún turno al carrito.',
+        showConfirmButton: true,
+      });
+      return;
+    }
+    else{setMostrarModal(true);
+  }};
 
   const seleccionarCliente = () => {
     if (email === '') {
@@ -73,14 +81,6 @@ const CarritoReservas = () => {
   };
 
   const comprarCarrito = () => {
-    if (carrito.length === 0) {
-      Swal.fire({
-        icon: 'info',
-        title: 'No ha agregado ningún turno al carrito.',
-        showConfirmButton: true,
-      });
-      return;
-    }
 
     const detalles = carrito.map((item) => ({
       id_turno: item.turno,
@@ -132,7 +132,7 @@ const CarritoReservas = () => {
 
   const renderProductos = () => {
     if (turnosCarrito.length === 0) {
-      return <div className='no-reservas'>No hay turnos en el carrito</div>;
+      return <div className='no-items'>No hay turnos en el carrito</div>;
     }
 
     return (
@@ -191,7 +191,9 @@ const CarritoReservas = () => {
               <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
             </div>
             <div className="boton-carrito">
-              <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
+              <BotonComprarCarrito className="boton-carrito" 
+              onClick={mostrarModalCliente} 
+              />
             </div>
           </div>
         </Card>

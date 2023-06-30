@@ -63,6 +63,9 @@ const TurnosDisponibles = () => {
     setModalReservaRealizada(true);
   };
 
+  if (turnos.length === 0) {
+    return <div className='no-items'>No hay turnos</div>;
+  }
   return (
     <div className="card-container" style={{padding:'5vh'}} >
       <h2>Turnos Disponibles</h2>
