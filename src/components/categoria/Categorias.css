@@ -1,0 +1,38 @@
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 81vh;
+  flex-direction: column; /* Añade esta línea para alinear verticalmente */
+  margin-top: 1px; /* Ajusta el valor del margen superior según tus necesidades */
+}
+.imagen-grid {
+  display: grid;
+  place-content: center;
+  justify-content: center;
+  grid-template-columns: repeat(3, 1fr); /* Ajusta el número de columnas según tus necesidades */
+  grid-gap: 10px; /* Ajusta el valor para reducir el espacio entre imágenes */
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto; /* Centra el contenedor en el medio horizontal */
+}
+
+.imagen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent; /* Establece el fondo del contenedor de imágenes como transparente */
+}
+
+.imagen-item img {
+  width: 100%; /* Modifica el ancho al 100% para que se ajuste al contenedor */
+  height: auto;
+  border-radius: 8px;
+  background-color: transparent; /* Establece el fondo del borde como transparente */
+}
+
+h2 {
+  text-align: center;
+  background-color: transparent;
+}

@@ -1,0 +1,68 @@
+/* Estilos para las cards en el carrito */
+.producto-card-c {
+    margin-top: 20px;
+  }
+  
+  /* Estilos para el contenedor de información y botones */
+  .card-info-container {
+    display: column;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+    align-items: center;
+    justify-content: center;
+    max-height: 200px;
+  }
+
+  .custom-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .custom-row .col {
+    height: 200px; /* Ajusta la altura deseada */
+  }
+  
+  /* Estilos para el precio total */
+  .precio-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .precio-total {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .precio-total-2 {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  /* Estilos para los botones del carrito */
+  .boton-carrito {
+    margin-top: 10px;
+  }
+  
+  /* Estilos para el modal de confirmación */
+  .modal-title {
+    font-weight: bold;
+  }
+  
+  .modal-body p {
+    margin-bottom: 15px;
+  }
+  
+  .modal-footer {
+    justify-content: space-between;
+  }
+
+  .no-items {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: 5vh;
+    padding-top: 6vh;
+    padding-bottom: 6vh;
+    
+  }

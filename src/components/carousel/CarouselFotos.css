@@ -1,0 +1,36 @@
+.carousel-root {
+  width: 1200px; /* Tamaño personalizado */
+  height: 900px; /* Tamaño personalizado */
+  margin: 0 auto;
+}
+
+.carousel .slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel .slide img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.carousel .legend {
+  text-align:end;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.carousel .thumbs-wrapper {
+  display: none;
+}
+
+.carousel .carousel .control-dots {
+  display: flex;
+  justify-content: center;
+}
+
+.carousel .control-dots {
+  display: flex !important;
+  justify-content: center !important;
+}
