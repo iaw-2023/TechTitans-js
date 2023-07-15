@@ -3,22 +3,27 @@ import { API } from '../../config.js';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import BotonVaciar from '../botones/BotonVaciar';
-import BotonComprarCarrito from '../botones/BotonComprarCarrito';
-import { CarritoContexto } from '../../context/ShoppingCartContext';
-import TurnoCarrito from './TurnoCarrito';
+import BotonVaciar from '../botones/BotonVaciar.js';
+import BotonComprarCarrito from '../botones/BotonComprarCarrito.js';
+import { CarritoContexto } from '../../context/ShoppingCartContext.jsx';
+import TurnoCarrito from './TurnoCarrito.jsx';
 import Swal from 'sweetalert2';
 import './CarritoReservas.css';
 import {Row, Col} from 'react-bootstrap';
 
+import { useAuth0 } from '@auth0/auth0-react';
+
+
 const CarritoReservas = () => {
   const { vaciarCarrito, carrito, eliminarElemento } = useContext(CarritoContexto);
   const [turnosCarrito, setTurnosCarrito] = useState([]);
-  const [email, setEmail] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [mostrarConfirmacionEliminar, setMostrarConfirmacionEliminar] = useState(false);
   const [turnoAEliminar, setTurnoAEliminar] = useState(null);
+  const { isAuthenticated, loginWithRedirect, user } = useAuth0();
+  const emailUsuario = isAuthenticated ? user.email : '';
+  const [email, setEmail] = useState(emailUsuario);
 
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
@@ -31,6 +36,11 @@ const CarritoReservas = () => {
     }
     else{setMostrarModal(true);
   }};
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    loginWithRedirect();
+  };
 
   const seleccionarCliente = () => {
     if (email === '') {
@@ -87,7 +97,7 @@ const CarritoReservas = () => {
     }));
 
     const body = JSON.stringify({
-      email_cliente: email,
+      email_cliente: email || emailUsuario,
       turnos: detalles,
       precio_total: parseInt(obtenerPrecio())
     });
@@ -203,23 +213,26 @@ const CarritoReservas = () => {
           <Modal.Title>Gestionar reserva</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Ingrese su email para finalizar la reserva.</p>
-          <div className="search-form d-flex">
-            <form className="form-inline">
-              <input
-                className="form-control mr-sm-2"
-                type="search"
-                placeholder="email"
-                aria-label="Search"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <Button variant="outline-success" onClick={seleccionarCliente}>
-                Comprar
-              </Button>
-            </form>
-          </div>
+          {isAuthenticated ? (
+            <div className="search-form d-flex">
+              <form className="form-inline">
+                <p>Presione comprar para finalizar la reserva.
+                  Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
+                </p>
+                <button type="button" class="btn btn-success" onClick={seleccionarCliente}>Comprar</button>
+              </form>
+            </div>
+            ) : (
+            <div className="search-form d-flex">
+              <form className="form-inline">
+                <p>Debe iniciar sesión para realizar una reserva. Por favor, presione el boton 
+                  "Iniciar sesión" para poder finalizar.
+                </p>
+                <button type="button" class="btn btn-info" onClick={handleLogin}>Iniciar sesión</button>
+              </form>
+            </div>
+            )
+          }
         </Modal.Body>
       </Modal>
       <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>

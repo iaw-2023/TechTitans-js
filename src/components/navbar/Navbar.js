@@ -34,13 +34,11 @@ const Navbar = () => {
             Contacto
           </Link>
         </li>
-        {isAuthenticated ? (
-          <li className="carrito-logo">
-            <Link className="nav-link" to="/carrito">
-              <img src={carrito} alt="Carrito" />
-            </Link>
-          </li>
-        ) : null}
+        <li className="carrito-logo">
+          <Link className="nav-link" to="/carrito">
+            <img src={carrito} alt="Carrito" />
+          </Link>
+        </li>
         <li className="nav-item">
           {isAuthenticated ? (
             <button className="nav-link" onClick={handleLogout}>
@@ -54,7 +52,7 @@ const Navbar = () => {
         </li>
         {isAuthenticated && user ? (
           <li className="nav-item">
-            <span className="nav-link">{user.name}</span>
+            <span className="nav-link" >{user.name}</span>
           </li>
         ) : null}
       </ul>
