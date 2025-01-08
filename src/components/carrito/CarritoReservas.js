@@ -113,14 +113,16 @@ const CarritoReservas = () => {
 
       const { preference_id } = await response.json();
 
-      // Crear botón de MercadoPago
-      const bricksBuilder = mp.bricks();
+      console.log('Preference ID recibido:', preference_id);
 
-      await bricksBuilder.create("wallet", "wallet_container", {
+      // Crear botón de MercadoPago
+      const bricksBuilder = mp.bricks().create('wallet', 'wallet_container', {
         initialization: {
           preferenceId: preference_id,
         },
-      });
+      })
+      .then(() => console.log('Brick inicializado correctamente'))
+      .catch((error) => console.error('Error al inicializar el Brick:', error));
 
       Swal.fire({
         icon: "success",
