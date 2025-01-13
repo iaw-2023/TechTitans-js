@@ -3,11 +3,14 @@ import { API } from '../../config.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Reservas.css';
 import { useAuth0 } from '@auth0/auth0-react';
+import ReservaModal from './ReservaModal'; // Componente para el modal
 
 const Reservas = () => {
   const { user } = useAuth0();
   const [reservas, setReservas] = useState([]);
   const [alert, setAlert] = useState('');
+  const [modalData, setModalData] = useState(null); // Datos para el modal
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (user?.email) {
@@ -28,7 +31,7 @@ const Reservas = () => {
 
       if (!response.ok) {
         if (response.status === 404) {
-          setReservas([]); // No es un error, simplemente no hay reservas
+          setReservas([]);
           return;
         }
         throw new Error('Error al obtener las reservas');
@@ -56,7 +59,7 @@ const Reservas = () => {
       }
 
       setAlert('Reserva cancelada exitosamente');
-      fetchReservas(user.email); // Sincronizar estado con el backend
+      fetchReservas(user.email);
       setTimeout(() => setAlert(''), 3000);
     } catch (error) {
       console.error('Error al cancelar la reserva:', error);
@@ -89,6 +92,11 @@ const Reservas = () => {
     }
   };
 
+  const handleShowModal = (reserva) => {
+    setModalData(reserva);
+    setShowModal(true);
+  };
+
   return (
     <div className="card-container">
       <h1>Mis Reservas</h1>
@@ -107,24 +115,26 @@ const Reservas = () => {
             <div className="col-md-4 mb-4" key={reserva.reserva.id}>
               <div className="card border-primary mb-3 text-bg-dark mb-3">
                 <div className="card-body">
-                  <h3 className="card-title">Orden de Reserva n°{reserva.reserva.id}</h3>
+                  <h3 className="card-title">Orden de Reserva # {reserva.reserva.id}</h3>
                   <p className="card-text">
-                    Fecha en la que reservaste: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
+                    Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
                   </p>
-                  <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
-                  <p className="card-text">
-                    Precio Total: $
-                    {reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}
-                  </p>
+                  <p className="card-text">Precio Total: ${reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}</p>
                   <p className="card-text">
                     Estado:{' '}
                     <span className={getBadgeClass(reserva.reserva.estado)}>
                       {reserva.reserva.estado}
                     </span>
                   </p>
+                  <button
+                    className="btn btn-info"
+                    onClick={() => handleShowModal(reserva)}
+                  >
+                    Detalles
+                  </button>
                   {reserva.reserva.estado !== 'Cancelado' && (
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-danger ms-2"
                       onClick={() => confirmarCancelacion(reserva.reserva)}
                     >
                       Cancelar Reserva
@@ -135,6 +145,14 @@ const Reservas = () => {
             </div>
           ))}
         </div>
+      )}
+      {modalData && (
+        <ReservaModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          reserva={modalData.reserva}
+          detalle={modalData.detalle}
+        />
       )}
     </div>
   );
