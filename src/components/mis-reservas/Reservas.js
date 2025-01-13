@@ -107,14 +107,14 @@ const Reservas = () => {
             <div className="col-md-4 mb-4" key={reserva.reserva.id}>
               <div className="card border-primary mb-3 text-bg-dark mb-3">
                 <div className="card-body">
-                  <h3 className="card-title">Reserva #{reserva.reserva.id}</h3>
+                  <h3 className="card-title">Orden de Reserva n°{reserva.reserva.id}</h3>
                   <p className="card-text">
-                    Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
+                    Fecha en la que reservaste: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
                   </p>
                   <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
                   <p className="card-text">
                     Precio Total: $
-                    {reserva.detalle.reduce((total, item) => total + item.precio, 0)}
+                    {reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}
                   </p>
                   <p className="card-text">
                     Estado:{' '}
