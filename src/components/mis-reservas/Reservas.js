@@ -28,6 +28,7 @@ const Reservas = () => {
         },
         body: JSON.stringify({ email_cliente: email }),
       });
+      console.log(body);
 
       if (!response.ok) {
         throw new Error('No se encontraron reservas para este cliente');
