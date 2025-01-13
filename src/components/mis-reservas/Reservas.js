@@ -21,6 +21,8 @@ const Reservas = () => {
   const fetchReservas = async (email) => {
     try {
       setAlert('');
+      const requestBody = { email_cliente: email };
+      console.log('Cuerpo de la solicitud:', requestBody); // Log para verificar el body
       const response = await fetch(`${API}reservas/misReservas`, {
         method: 'POST',
         headers: {
@@ -28,7 +30,6 @@ const Reservas = () => {
         },
         body: JSON.stringify({ email_cliente: email }),
       });
-      console.log(body);
 
       if (!response.ok) {
         throw new Error('No se encontraron reservas para este cliente');
