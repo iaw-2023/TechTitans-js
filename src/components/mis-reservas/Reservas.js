@@ -26,12 +26,19 @@ const Reservas = () => {
         body: JSON.stringify({ email_cliente: email }),
       });
 
+      if (!response.ok) {
+        if (response.status === 404) {
+          setReservas([]); // No es un error, simplemente no hay reservas
+          return;
+        }
+        throw new Error('Error al obtener las reservas');
+      }
+
       const data = await response.json();
       setReservas(data);
     } catch (error) {
       console.error('Error al obtener reservas:', error);
       setAlert(error.message);
-
       setTimeout(() => {
         setAlert('');
       }, 3000);
@@ -75,7 +82,7 @@ const Reservas = () => {
         return 'badge bg-warning';
       case 'Aceptado':
         return 'badge bg-success';
-      case 'Cancelada':
+      case 'Cancelado':
         return 'badge bg-danger';
       default:
         return 'badge bg-secondary';
@@ -90,42 +97,45 @@ const Reservas = () => {
           {alert}
         </div>
       )}
-      <div className="row">
-        {reservas.map((reserva) => (
-          <div className="col-md-4 mb-4" key={reserva.reserva.id}>
-            <div className="card border-primary mb-3 text-bg-dark mb-3">
-              <div className="card-body">
-                <h3 className="card-title">Reserva #{reserva.reserva.id}</h3>
-                <p className="card-text">Cliente: {reserva.reserva.email_cliente}</p>
-                <p className="card-text">
-                  Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
-                </p>
-                <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
-                <p className="card-text">
-                  Precio:{' '}
-                  {reserva.detalle.map((detalle, index) => (
-                    <span key={index}>{detalle.precio}</span>
-                  ))}
-                </p>
-                <p className="card-text">
-                  Estado:{' '}
-                  <span className={getBadgeClass(reserva.reserva.estado)}>
-                    {reserva.reserva.estado}
-                  </span>
-                </p>
-                {reserva.reserva.estado !== 'Cancelado' && (
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => confirmarCancelacion(reserva.reserva)}
-                  >
-                    Cancelar Reserva
-                  </button>
-                )}
+      {reservas.length === 0 ? (
+        <div className="alert alert-primary" role="alert">
+          No tienes reservas registradas.
+        </div>
+      ) : (
+        <div className="row">
+          {reservas.map((reserva) => (
+            <div className="col-md-4 mb-4" key={reserva.reserva.id}>
+              <div className="card border-primary mb-3 text-bg-dark mb-3">
+                <div className="card-body">
+                  <h3 className="card-title">Reserva #{reserva.reserva.id}</h3>
+                  <p className="card-text">
+                    Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
+                  </p>
+                  <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
+                  <p className="card-text">
+                    Precio Total: $
+                    {reserva.detalle.reduce((total, item) => total + item.precio, 0)}
+                  </p>
+                  <p className="card-text">
+                    Estado:{' '}
+                    <span className={getBadgeClass(reserva.reserva.estado)}>
+                      {reserva.reserva.estado}
+                    </span>
+                  </p>
+                  {reserva.reserva.estado !== 'Cancelado' && (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => confirmarCancelacion(reserva.reserva)}
+                    >
+                      Cancelar Reserva
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
