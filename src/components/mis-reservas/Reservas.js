@@ -18,7 +18,7 @@ const Reservas = () => {
   const fetchReservas = async (email) => {
     try {
       setAlert('');
-      const response = await fetch(`${API}reservas/misReservas`, {
+      const response = await fetch(`${API}rest/reservas/misReservas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const Reservas = () => {
 
   const cancelarReserva = async (idReserva) => {
     try {
-      const response = await fetch(`${API}reservas/cancelar/${idReserva}`, {
+      const response = await fetch(`${API}rest/reservas/cancelar/${idReserva}`, {
         method: 'PATCH',
       });
 
@@ -52,8 +52,8 @@ const Reservas = () => {
         throw new Error('Error al cancelar la reserva');
       }
 
-      setReservas(reservas.filter((reserva) => reserva.reserva.id !== idReserva));
       setAlert('Reserva cancelada exitosamente');
+      fetchReservas(user.email); // Sincronizar estado con el backend
       setTimeout(() => setAlert(''), 3000);
     } catch (error) {
       console.error('Error al cancelar la reserva:', error);
