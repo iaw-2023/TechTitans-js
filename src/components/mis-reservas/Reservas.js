@@ -18,7 +18,7 @@ const Reservas = () => {
   const fetchReservas = async (email) => {
     try {
       setAlert('');
-      const response = await fetch(`${API}rest/reservas/misReservas`, {
+      const response = await fetch(`${API}reservas/misReservas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const Reservas = () => {
 
   const cancelarReserva = async (idReserva) => {
     try {
-      const response = await fetch(`${API}rest/reservas/cancelar/${idReserva}`, {
+      const response = await fetch(`${API}reservas/cancelar/${idReserva}`, {
         method: 'PATCH',
       });
 
