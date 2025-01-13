@@ -11,10 +11,20 @@ const Reservas = () => {
   const fetchReservas = async () => {
     try {
       setAlert('');
-      const response = await fetch(API + 'reservas/misReservas/' + email);
+      const response = await fetch(API + 'reservas/misReservas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email_cliente: email }),
+      });
+
       if (response.status === 404) {
-        throw new Error('El cliente no existe');
+        throw new Error('El cliente no tiene reservas');
+      } else if (response.status === 400) {
+        throw new Error('Correo electrónico es obligatorio');
       }
+
       const data = await response.json();
       setReservas(data);
       console.log(data);
@@ -30,6 +40,13 @@ const Reservas = () => {
   };
 
   const handleSearch = () => {
+    if (email.trim() === '') {
+      setAlert('Por favor, ingrese un email válido.');
+      setTimeout(() => {
+        setAlert('');
+      }, 3000);
+      return;
+    }
     fetchReservas();
   };
 
@@ -44,7 +61,7 @@ const Reservas = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <label htmlFor="floatingInput">Ingrese su mail para buscar sus reservas</label>
+        <label htmlFor="floatingInput">Ingrese su email para buscar sus reservas</label>
       </div>
       <button className="btn btn-primary" onClick={handleSearch}>
         Buscar
@@ -56,23 +73,24 @@ const Reservas = () => {
       )}
       <div className="row">
         {reservas.map((reserva, index) => (
-          <div className="col-md-4 mb-4" key={reserva.id}>
-            <div className="card border-primary mb-3 text-bg-dark mb-3">
-              <div className="card-body" key={index}>
-                <h3 className="card-title">{reserva.reserva.id}</h3>
+          <div className="col-md-4 mb-4" key={index}>
+            <div className="card border-primary text-bg-dark mb-3">
+              <div className="card-body">
+                <h3 className="card-title">Reserva ID: {reserva.reserva.id}</h3>
                 <p className="card-text">Cliente: {reserva.reserva.email_cliente}</p>
                 <p className="card-text">
                   Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
                 </p>
                 <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
                 <p className="card-text">
-                  Precio:{' '}
-                  {reserva.detalles.map((detalle, detalleIndex) => (
-                    <span key={detalleIndex}>
-                      {detalle.precio}
-                      {detalleIndex !== reserva.detalles.length - 1 && ', '}
-                    </span>
-                  ))}
+                  Detalles:
+                  <ul>
+                    {reserva.detalle.map((detalle, detalleIndex) => (
+                      <li key={detalleIndex}>
+                        Precio: {detalle.precio} | Turno ID: {detalle.id_turno}
+                      </li>
+                    ))}
+                  </ul>
                 </p>
               </div>
             </div>
