@@ -65,7 +65,7 @@ const Reservas = () => {
   const confirmarCancelacion = (reserva) => {
     if (reserva.estado === 'Aceptado') {
       const confirmacion = window.confirm(
-        'La cancelación de esta reserva no garantiza la devolución del dinero. ¿Está seguro de que desea cancelarla?'
+        'Lamentablemente no podemos devolverte el dinero. ¿Está seguro de que desea cancelarla?'
       );
       if (!confirmacion) return;
     }
@@ -117,7 +117,7 @@ const Reservas = () => {
                     {reserva.reserva.estado}
                   </span>
                 </p>
-                {reserva.reserva.estado !== 'Cancelada' && (
+                {reserva.reserva.estado !== 'Cancelado' && (
                   <button
                     className="btn btn-danger"
                     onClick={() => confirmarCancelacion(reserva.reserva)}
