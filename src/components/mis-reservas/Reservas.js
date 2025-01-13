@@ -62,6 +62,17 @@ const Reservas = () => {
     }
   };
 
+  const confirmarCancelacion = (reserva) => {
+    if (reserva.estado === 'Aceptado') {
+      const confirmacion = window.confirm(
+        'La cancelación de esta reserva no garantiza la devolución del dinero. ¿Está seguro de que desea cancelarla?'
+      );
+      if (!confirmacion) return;
+    }
+
+    cancelarReserva(reserva.id);
+  };
+
   const getBadgeClass = (estado) => {
     switch (estado) {
       case 'Pendiente':
@@ -74,6 +85,7 @@ const Reservas = () => {
         return 'badge bg-secondary';
     }
   };
+
   return (
     <div className="card-container">
       <h1>Mis Reservas</h1>
@@ -105,10 +117,10 @@ const Reservas = () => {
                     {reserva.reserva.estado}
                   </span>
                 </p>
-                {reserva.reserva.estado !== 'Cancelado' && (
+                {reserva.reserva.estado !== 'Cancelada' && (
                   <button
                     className="btn btn-danger"
-                    onClick={() => cancelarReserva(reserva.reserva.id)}
+                    onClick={() => confirmarCancelacion(reserva.reserva)}
                   >
                     Cancelar Reserva
                   </button>
