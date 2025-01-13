@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { API } from '../../config.js';
+import { useAuth0 } from '@auth0/auth0-react'; // Usar Auth0 para autenticación
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Reservas.css';
 
 const Reservas = () => {
+  const { isAuthenticated, user } = useAuth0(); // Obtener estado de autenticación y usuario
   const [reservas, setReservas] = useState([]);
-  const [email, setEmail] = useState('');
   const [alert, setAlert] = useState('');
 
-  const fetchReservas = async () => {
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      fetchReservas(user.email);
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchReservas = async (email) => {
     try {
       setAlert('');
-      const response = await fetch(API + 'reservas/misReservas', {
+      const response = await fetch(`${API}reservas/misReservas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,15 +26,12 @@ const Reservas = () => {
         body: JSON.stringify({ email_cliente: email }),
       });
 
-      if (response.status === 404) {
-        throw new Error('El cliente no tiene reservas');
-      } else if (response.status === 400) {
-        throw new Error('Correo electrónico es obligatorio');
+      if (!response.ok) {
+        throw new Error('No se encontraron reservas para este cliente');
       }
 
       const data = await response.json();
       setReservas(data);
-      console.log(data);
     } catch (error) {
       console.error(error);
       setAlert(error.message);
@@ -39,33 +43,8 @@ const Reservas = () => {
     }
   };
 
-  const handleSearch = () => {
-    if (email.trim() === '') {
-      setAlert('Por favor, ingrese un email válido.');
-      setTimeout(() => {
-        setAlert('');
-      }, 3000);
-      return;
-    }
-    fetchReservas();
-  };
-
   return (
     <div className="card-container">
-      <div className="form-floating mb-3">
-        <input
-          type="email"
-          className="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <label htmlFor="floatingInput">Ingrese su email para buscar sus reservas</label>
-      </div>
-      <button className="btn btn-primary" onClick={handleSearch}>
-        Buscar
-      </button>
       {alert && (
         <div className="alert alert-danger" role="alert">
           {alert}
@@ -73,9 +52,9 @@ const Reservas = () => {
       )}
       <div className="row">
         {reservas.map((reserva, index) => (
-          <div className="col-md-4 mb-4" key={index}>
-            <div className="card border-primary text-bg-dark mb-3">
-              <div className="card-body">
+          <div className="col-md-4 mb-4" key={reserva.reserva.id}>
+            <div className="card border-primary mb-3 text-bg-dark mb-3">
+              <div className="card-body" key={index}>
                 <h3 className="card-title">Reserva ID: {reserva.reserva.id}</h3>
                 <p className="card-text">Cliente: {reserva.reserva.email_cliente}</p>
                 <p className="card-text">
@@ -84,13 +63,12 @@ const Reservas = () => {
                 <p className="card-text">Hora: {reserva.reserva.hora_reserva}</p>
                 <p className="card-text">
                   Detalles:
-                  <ul>
-                    {reserva.detalle.map((detalle, detalleIndex) => (
-                      <li key={detalleIndex}>
-                        Precio: {detalle.precio} | Turno ID: {detalle.id_turno}
-                      </li>
-                    ))}
-                  </ul>
+                  {reserva.detalle.map((detalle, detalleIndex) => (
+                    <span key={detalleIndex}>
+                      <br />
+                      Turno ID: {detalle.id_turno}, Precio: {detalle.precio}
+                    </span>
+                  ))}
                 </p>
               </div>
             </div>
