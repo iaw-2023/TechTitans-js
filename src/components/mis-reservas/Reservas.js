@@ -11,7 +11,10 @@ const Reservas = () => {
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
+      console.log('Usuario autenticado, email capturado:', user.email); // Log para verificar el email
       fetchReservas(user.email);
+    } else {
+      console.log('Usuario no autenticado o email no disponible');
     }
   }, [isAuthenticated, user]);
 
@@ -33,7 +36,7 @@ const Reservas = () => {
       const data = await response.json();
       setReservas(data);
     } catch (error) {
-      console.error(error);
+      console.error('Error al obtener reservas:', error);
       setAlert(error.message);
       setReservas([]);
 
