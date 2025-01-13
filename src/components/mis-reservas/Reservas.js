@@ -74,7 +74,6 @@ const Reservas = () => {
         return 'badge bg-secondary';
     }
   };
-
   return (
     <div className="card-container">
       <h1>Mis Reservas</h1>
@@ -106,7 +105,7 @@ const Reservas = () => {
                     {reserva.reserva.estado}
                   </span>
                 </p>
-                {reserva.reserva.estado !== 'Cancelada' && (
+                {reserva.reserva.estado !== 'Cancelado' && (
                   <button
                     className="btn btn-danger"
                     onClick={() => cancelarReserva(reserva.reserva.id)}
