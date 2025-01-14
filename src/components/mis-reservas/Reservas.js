@@ -112,20 +112,7 @@ const Reservas = () => {
     setModalData(reserva);
     setShowModal(true);
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div>
-          <p>Debe iniciar sesión para ver sus reservas.</p>
-          <button className="btn btn-primary" onClick={loginWithRedirect}>
-            Iniciar sesión
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
     <div className="card-container">
       <h1>Mis Reservas</h1>
