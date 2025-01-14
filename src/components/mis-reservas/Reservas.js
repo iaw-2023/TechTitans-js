@@ -7,23 +7,27 @@ import ReservaModal from './ReservaModal';
 import ConfirmCancelModal from './ConfirmCancelModal'; // Importa el nuevo modal
 
 const Reservas = () => {
-  const { user } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
   const [reservas, setReservas] = useState([]);
   const [alert, setAlert] = useState('');
+  const [loading, setLoading] = useState(true); // Estado de carga
   const [modalData, setModalData] = useState(null); // Datos para el modal de detalles
   const [showModal, setShowModal] = useState(false);
   const [cancelModalData, setCancelModalData] = useState(null); // Reserva a cancelar
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [loading, setLoading] = useState(false); // Estado de carga
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect(); // Redirige al inicio de sesión si no está autenticado
+      return;
+    }
     if (user?.email) {
       fetchReservas(user.email);
     }
-  }, [user]);
+  }, [isAuthenticated, user]);
 
   const fetchReservas = async (email) => {
-    setLoading(true); // Activar el estado de carga
+    setLoading(true); // Activa el estado de carga
     try {
       setAlert('');
       const response = await fetch(`${API}reservas/misReservas`, {
@@ -37,7 +41,6 @@ const Reservas = () => {
       if (!response.ok) {
         if (response.status === 404) {
           setReservas([]);
-          setLoading(false);
           return;
         }
         throw new Error('Error al obtener las reservas');
@@ -52,7 +55,7 @@ const Reservas = () => {
         setAlert('');
       }, 3000);
     } finally {
-      setLoading(false); // Desactivar el estado de carga
+      setLoading(false); // Desactiva el estado de carga
     }
   };
 
@@ -109,6 +112,19 @@ const Reservas = () => {
     setModalData(reserva);
     setShowModal(true);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div>
+          <p>Debe iniciar sesión para ver sus reservas.</p>
+          <button className="btn btn-primary" onClick={loginWithRedirect}>
+            Iniciar sesión
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="card-container">
