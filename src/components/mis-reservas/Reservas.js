@@ -9,8 +9,10 @@ const Reservas = () => {
   const { user } = useAuth0();
   const [reservas, setReservas] = useState([]);
   const [alert, setAlert] = useState('');
-  const [modalData, setModalData] = useState(null); // Datos para el modal
+  const [modalData, setModalData] = useState(null); // Datos para el modal de detalles
   const [showModal, setShowModal] = useState(false);
+  const [cancelModalData, setCancelModalData] = useState(null); // Datos para el modal de cancelación
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     if (user?.email) {
@@ -59,7 +61,7 @@ const Reservas = () => {
       }
 
       setAlert('Reserva cancelada exitosamente');
-      fetchReservas(user.email);
+      fetchReservas(user.email); // Actualiza el estado con el backend
       setTimeout(() => setAlert(''), 3000);
     } catch (error) {
       console.error('Error al cancelar la reserva:', error);
@@ -70,13 +72,19 @@ const Reservas = () => {
 
   const confirmarCancelacion = (reserva) => {
     if (reserva.estado === 'Aceptado') {
-      const confirmacion = window.confirm(
-        'Lamentablemente no podemos devolverte el dinero. ¿Está seguro de que desea cancelarla?'
-      );
-      if (!confirmacion) return;
+      // Configura los datos para el modal de confirmación
+      setCancelModalData(reserva);
+      setShowCancelModal(true);
+    } else {
+      cancelarReserva(reserva.id);
     }
+  };
 
-    cancelarReserva(reserva.id);
+  const handleCancelConfirmation = () => {
+    if (cancelModalData) {
+      cancelarReserva(cancelModalData.id);
+      setShowCancelModal(false);
+    }
   };
 
   const getBadgeClass = (estado) => {
@@ -94,11 +102,7 @@ const Reservas = () => {
 
   const handleShowModal = (reserva) => {
     setModalData(reserva);
-    setShowModal(true); // Abre el modal
-  };
-  
-  const handleCloseModal = () => {
-    setShowModal(false); // Cierra el modal
+    setShowModal(true);
   };
 
   return (
@@ -123,17 +127,16 @@ const Reservas = () => {
                   <p className="card-text">
                     Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
                   </p>
-                  <p className="card-text">Precio Total: ${reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}</p>
+                  <p className="card-text">
+                    Precio Total: ${reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}
+                  </p>
                   <p className="card-text">
                     Estado:{' '}
                     <span className={getBadgeClass(reserva.reserva.estado)}>
                       {reserva.reserva.estado}
                     </span>
                   </p>
-                  <button
-                    className="btn btn-info"
-                    onClick={() => handleShowModal(reserva)}
-                  >
+                  <button className="btn btn-info" onClick={() => handleShowModal(reserva)}>
                     Detalles
                   </button>
                   {reserva.reserva.estado !== 'Cancelado' && (
@@ -152,11 +155,39 @@ const Reservas = () => {
       )}
       {modalData && (
         <ReservaModal
-        show={showModal}
-        onClose={handleCloseModal}
-        reserva={modalData?.reserva}
-        turnos={modalData?.turnos}
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          reserva={modalData.reserva}
+          turnos={modalData.turnos}
         />
+      )}
+      {cancelModalData && (
+        <ReservaModal
+          show={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          reserva={cancelModalData}
+          turnos={[]} // No necesita turnos en este modal
+        >
+          <div className="modal-body">
+            <p>
+              Lamentablemente no podemos devolverte el dinero. ¿Está seguro de que desea cancelar la reserva?
+            </p>
+          </div>
+          <div className="modal-footer">
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowCancelModal(false)}
+            >
+              No
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={handleCancelConfirmation}
+            >
+              Sí, cancelar
+            </button>
+          </div>
+        </ReservaModal>
       )}
     </div>
   );
