@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { API } from '../../config';
 import './turnosDisponibles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,41 +10,45 @@ const TurnosDisponibles = () => {
   const [turnos, setTurnos] = useState([]);
   const [selectedTurno, setSelectedTurno] = useState(null);
   const [modalReservaRealizada, setModalReservaRealizada] = useState(false);
-  const {categoriaId} = useParams();
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const { categoriaId } = useParams();
   const [selectedFecha, setSelectedFecha] = useState(null);
 
   const carritoContexto = useContext(CarritoContexto);
-  const { agregarItem} = carritoContexto;
+  const { agregarItem } = carritoContexto;
 
   useEffect(() => {
     const fetchTurnos = async () => {
+      setLoading(true); // Inicia el estado de carga
       try {
-        let url ;
-        
-        if (selectedFecha!=null) {
+        let url;
+
+        if (selectedFecha != null) {
           url = `${API}turnos/fecha/cat/${selectedFecha}/${categoriaId}`;
-        }else{
+        } else {
           url = `${API}turnos/dispCat/${categoriaId}`;
         }
-  
+
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Error al obtener los turnos');
         }
-  
+
         const data = await response.json();
         setTurnos(data);
         console.log(data);
       } catch (error) {
         console.error('Error al obtener los turnos', error);
+      } finally {
+        setLoading(false); // Finaliza el estado de carga
       }
     };
     fetchTurnos();
   }, [categoriaId, selectedFecha]);
-  
+
   const handleFechaChange = (e) => {
     const value = e.target.value;
-    setSelectedFecha(value  ? value : null);
+    setSelectedFecha(value ? value : null);
   };
 
   const openModal = (turno) => {
@@ -57,59 +61,74 @@ const TurnosDisponibles = () => {
   };
 
   const confirmarReserva = (turno) => {
-    console.log("turno ", turno, "id ", turno.id);
+    console.log('turno ', turno, 'id ', turno.id);
     agregarItem(turno.id, turno);
     setSelectedTurno(null);
     setModalReservaRealizada(true);
   };
 
-  if (turnos.length === 0) {
-    return <div className='no-items'>No hay turnos</div>;
-  }
   return (
-    <div className="card-container" style={{padding:'5vh'}} >
+    <div className="card-container" style={{ padding: '5vh' }}>
       <h2>Turnos Disponibles</h2>
       <div className="filter-container">
-      <input
-        type="date"
-        value={selectedFecha || ''}
-        onChange={handleFechaChange}
-      />
-
+        <input
+          type="date"
+          value={selectedFecha || ''}
+          onChange={handleFechaChange}
+        />
       </div>
-      <Row className="justify-content-center">
-        {turnos.map((turno) => (
-          <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
-            <Card className="card border-primary mb-3 text-bg-dark mb-3">
-              <Card.Body>
-                <Card.Title>{turno.cancha.nombre}</Card.Title>
-                <Card.Text>
-                   Fecha: {(() => {
-                    const fecha = new Date(turno.fecha_turno);
-                    fecha.setDate(fecha.getDate() + 1); 
-                    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                  return fecha.toLocaleDateString('es-AR', opcionesFecha);
-                  })()}
-                </Card.Text>
-                <Card.Text>Hora: {turno.hora_turno}</Card.Text>
-                <Card.Text>Precio: ${turno.cancha.precio}</Card.Text>
-                <Button variant="primary" onClick={() => openModal(turno)} className="mr-2">
-                  Ver Detalles
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={() => {
-                    confirmarReserva(turno);
-                  }}
-                  className="mr-2"
-                >
-                  Reservar
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <div className="d-flex justify-content-center my-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      ) : turnos.length === 0 ? (
+        <div className="alert alert-primary">No hay turnos disponibles</div>
+      ) : (
+        <Row className="justify-content-center">
+          {turnos.map((turno) => (
+            <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
+              <Card className="card border-primary mb-3 text-bg-dark mb-3">
+                <Card.Body>
+                  <Card.Title>{turno.cancha.nombre}</Card.Title>
+                  <Card.Text>
+                    Fecha: {(() => {
+                      const fecha = new Date(turno.fecha_turno);
+                      fecha.setDate(fecha.getDate() + 1);
+                      const opcionesFecha = {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      };
+                      return fecha.toLocaleDateString('es-AR', opcionesFecha);
+                    })()}
+                  </Card.Text>
+                  <Card.Text>Hora: {turno.hora_turno}</Card.Text>
+                  <Card.Text>Precio: ${turno.cancha.precio}</Card.Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => openModal(turno)}
+                    className="mr-2"
+                  >
+                    Ver Detalles
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={() => {
+                      confirmarReserva(turno);
+                    }}
+                    className="mr-2"
+                  >
+                    Reservar
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
 
       <Modal show={selectedTurno !== null} onHide={closeModal}>
         <Modal.Header closeButton>
@@ -119,12 +138,19 @@ const TurnosDisponibles = () => {
           {selectedTurno && (
             <div>
               <p>{selectedTurno.cancha.nombre}</p>
-              <p>Fecha: {(() => {
-                    const fecha = new Date(selectedTurno.fecha_turno);
-                    fecha.setDate(fecha.getDate() + 1);
-                    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+              <p>
+                Fecha: {(() => {
+                  const fecha = new Date(selectedTurno.fecha_turno);
+                  fecha.setDate(fecha.getDate() + 1);
+                  const opcionesFecha = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  };
                   return fecha.toLocaleDateString('es-AR', opcionesFecha);
-                  })()}</p>
+                })()}
+              </p>
               <p>Hora: {selectedTurno.hora_turno}</p>
               <p>Precio: ${selectedTurno.cancha.precio}</p>
               <p>Superficie: {selectedTurno.cancha.superficie}</p>
