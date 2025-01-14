@@ -14,6 +14,7 @@ const Reservas = () => {
   const [showModal, setShowModal] = useState(false);
   const [cancelModalData, setCancelModalData] = useState(null); // Reserva a cancelar
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado de carga
 
   useEffect(() => {
     if (user?.email) {
@@ -22,6 +23,7 @@ const Reservas = () => {
   }, [user]);
 
   const fetchReservas = async (email) => {
+    setLoading(true); // Activar el estado de carga
     try {
       setAlert('');
       const response = await fetch(`${API}reservas/misReservas`, {
@@ -35,6 +37,7 @@ const Reservas = () => {
       if (!response.ok) {
         if (response.status === 404) {
           setReservas([]);
+          setLoading(false);
           return;
         }
         throw new Error('Error al obtener las reservas');
@@ -48,6 +51,8 @@ const Reservas = () => {
       setTimeout(() => {
         setAlert('');
       }, 3000);
+    } finally {
+      setLoading(false); // Desactivar el estado de carga
     }
   };
 
@@ -113,7 +118,13 @@ const Reservas = () => {
           {alert}
         </div>
       )}
-      {reservas.length === 0 ? (
+      {loading ? (
+        <div className="d-flex justify-content-center my-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      ) : reservas.length === 0 ? (
         <div className="alert alert-primary" role="alert">
           No tienes reservas registradas.
         </div>
