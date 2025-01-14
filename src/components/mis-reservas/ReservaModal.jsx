@@ -6,15 +6,25 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
 
   return (
     <div
-      className={`modal ${show ? 'd-block' : 'd-none'}`}
+      className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
       tabIndex="-1"
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      role="dialog"
+      aria-labelledby="modalLabel"
+      aria-hidden={!show}
     >
-      <div className="modal-dialog modal-lg">
+      <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Detalle de la Reserva #{reserva.id}</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
+            <h5 className="modal-title" id="modalLabel">
+              Detalle de la Reserva #{reserva.id}
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              onClick={onClose}
+            ></button>
           </div>
           <div className="modal-body">
             <h6>Información de la Reserva</h6>
@@ -42,10 +52,10 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
               <tbody>
                 {turnos.map(({ turno, cancha }, index) => (
                   <tr key={index}>
-                    <td>{turno.fecha_turno}</td>
+                    <td>{new Date(turno.fecha_turno).toLocaleDateString('es-AR')}</td>
                     <td>{turno.hora_turno}</td>
                     <td>{cancha.nombre}</td>
-                    <td>{cancha.categoria.nombre}</td>
+                    <td>{cancha.categoria?.nombre || 'Sin categoría'}</td>
                     <td>{cancha.superficie}</td>
                     <td>{cancha.cant_jugadores}</td>
                     <td>{cancha.techo ? 'Sí' : 'No'}</td>
@@ -56,7 +66,11 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
             </table>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
+            >
               Cerrar
             </button>
           </div>
