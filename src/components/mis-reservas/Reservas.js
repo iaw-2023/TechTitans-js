@@ -3,7 +3,8 @@ import { API } from '../../config.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Reservas.css';
 import { useAuth0 } from '@auth0/auth0-react';
-import ReservaModal from './ReservaModal'; // Componente para el modal
+import ReservaModal from './ReservaModal';
+import ConfirmCancelModal from './ConfirmCancelModal'; // Importa el nuevo modal
 
 const Reservas = () => {
   const { user } = useAuth0();
@@ -11,7 +12,7 @@ const Reservas = () => {
   const [alert, setAlert] = useState('');
   const [modalData, setModalData] = useState(null); // Datos para el modal de detalles
   const [showModal, setShowModal] = useState(false);
-  const [cancelModalData, setCancelModalData] = useState(null); // Datos para el modal de cancelación
+  const [cancelModalData, setCancelModalData] = useState(null); // Reserva a cancelar
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
@@ -72,9 +73,8 @@ const Reservas = () => {
 
   const confirmarCancelacion = (reserva) => {
     if (reserva.estado === 'Aceptado') {
-      // Configura los datos para el modal de confirmación
-      setCancelModalData(reserva);
-      setShowCancelModal(true);
+      setCancelModalData(reserva); // Configura los datos para el modal
+      setShowCancelModal(true); // Muestra el modal
     } else {
       cancelarReserva(reserva.id);
     }
@@ -83,7 +83,7 @@ const Reservas = () => {
   const handleCancelConfirmation = () => {
     if (cancelModalData) {
       cancelarReserva(cancelModalData.id);
-      setShowCancelModal(false);
+      setShowCancelModal(false); // Cierra el modal después de cancelar
     }
   };
 
@@ -161,34 +161,11 @@ const Reservas = () => {
           turnos={modalData.turnos}
         />
       )}
-      {cancelModalData && (
-        <ReservaModal
-          show={showCancelModal}
-          onClose={() => setShowCancelModal(false)}
-          reserva={cancelModalData}
-          turnos={[]} // No necesita turnos en este modal
-        >
-          <div className="modal-body">
-            <p>
-              Lamentablemente no podemos devolverte el dinero. ¿Está seguro de que desea cancelar la reserva?
-            </p>
-          </div>
-          <div className="modal-footer">
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowCancelModal(false)}
-            >
-              No
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={handleCancelConfirmation}
-            >
-              Sí, cancelar
-            </button>
-          </div>
-        </ReservaModal>
-      )}
+      <ConfirmCancelModal
+        show={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelConfirmation}
+      />
     </div>
   );
 };
