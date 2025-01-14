@@ -9,7 +9,7 @@ import { CarritoContexto } from "../../context/ShoppingCartContext.jsx";
 import TurnoCarrito from "./TurnoCarrito.jsx";
 import Swal from "sweetalert2";
 import "./CarritoReservas.css";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -21,6 +21,7 @@ const mp = new window.MercadoPago("APP_USR-0144850f-6a77-4ee3-b6bf-390c8bbe3cf7"
 const CarritoReservas = () => {
   const { vaciarCarrito, carrito, eliminarElemento } = useContext(CarritoContexto);
   const [turnosCarrito, setTurnosCarrito] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado de carga
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [mostrarConfirmacionEliminar, setMostrarConfirmacionEliminar] = useState(false);
@@ -60,6 +61,7 @@ const CarritoReservas = () => {
   };
 
   const obtenerTurnos = useCallback(async () => {
+    setLoading(true); // Activa el estado de carga
     const URL = `${API}turnos/`;
     const posiblesTurnos = carrito.map((turno) => {
       const turnoId = turno.id;
@@ -72,6 +74,8 @@ const CarritoReservas = () => {
       setTurnosCarrito(turnos);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false); // Desactiva el estado de carga
     }
   }, [carrito]);
 
@@ -113,16 +117,18 @@ const CarritoReservas = () => {
 
       const { preference_id } = await response.json();
 
-      console.log('Preference ID recibido:', preference_id);
+      console.log("Preference ID recibido:", preference_id);
 
       // Crear botón de MercadoPago
-      const bricksBuilder = mp.bricks().create('wallet', 'wallet_container', {
-        initialization: {
-          preferenceId: preference_id,
-        },
-      })
-      .then(() => console.log('Brick inicializado correctamente'))
-      .catch((error) => console.error('Error al inicializar el Brick:', error));
+      const bricksBuilder = mp
+        .bricks()
+        .create("wallet", "wallet_container", {
+          initialization: {
+            preferenceId: preference_id,
+          },
+        })
+        .then(() => console.log("Brick inicializado correctamente"))
+        .catch((error) => console.error("Error al inicializar el Brick:", error));
 
       Swal.fire({
         icon: "success",
@@ -147,6 +153,16 @@ const CarritoReservas = () => {
   }, [obtenerTurnos]);
 
   const renderProductos = () => {
+    if (loading) {
+      return (
+        <div className="d-flex justify-content-center my-5">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </Spinner>
+        </div>
+      );
+    }
+
     if (turnosCarrito.length === 0) {
       return <div className="no-items">No hay turnos en el carrito</div>;
     }
@@ -209,7 +225,8 @@ const CarritoReservas = () => {
           {isAuthenticated ? (
             <div>
               <p>
-                Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
+                Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la
+                misma. ¡Muchas gracias!
               </p>
               <button type="button" className="btn btn-success" onClick={comprarCarrito}>
                 Comprar
