@@ -151,7 +151,7 @@ const Reservas = () => {
           show={showModal}
           onHide={() => setShowModal(false)}
           reserva={modalData.reserva}
-          detalle={modalData.detalle}
+          turnos={modalData.turnos}
         />
       )}
     </div>
