@@ -94,7 +94,11 @@ const Reservas = () => {
 
   const handleShowModal = (reserva) => {
     setModalData(reserva);
-    setShowModal(true);
+    setShowModal(true); // Abre el modal
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false); // Cierra el modal
   };
 
   return (
@@ -148,10 +152,10 @@ const Reservas = () => {
       )}
       {modalData && (
         <ReservaModal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          reserva={modalData.reserva}
-          turnos={modalData.turnos}
+        show={showModal}
+        onClose={handleCloseModal}
+        reserva={modalData?.reserva}
+        turnos={modalData?.turnos}
         />
       )}
     </div>

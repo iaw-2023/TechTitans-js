@@ -4,19 +4,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ReservaModal = ({ reserva, turnos, show, onClose }) => {
   if (!reserva || !turnos) return null;
 
+  const handleBackdropClick = (e) => {
+    if (e.target.classList.contains('modal')) {
+      onClose(); // Cierra el modal al hacer clic fuera del contenido
+    }
+  };
+
   return (
     <div
-      className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
+      className={`modal ${show ? 'show' : ''}`}
       tabIndex="-1"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-      role="dialog"
-      aria-labelledby="modalLabel"
-      aria-hidden={!show}
+      style={{
+        display: show ? 'block' : 'none',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      }}
+      onClick={handleBackdropClick} // Detecta clic fuera del contenido
     >
       <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title" id="modalLabel">
+            <h5 className="modal-title">
               Detalle de la Reserva #{reserva.id}
             </h5>
             <button
