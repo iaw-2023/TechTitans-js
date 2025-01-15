@@ -139,7 +139,7 @@ const Reservas = () => {
                 <div className="card-body">
                   <h3 className="card-title">Orden de Reserva # {reserva.reserva.id}</h3>
                   <p className="card-text">
-                    Fecha: {new Date(reserva.reserva.fecha_reserva).toLocaleDateString('es-AR')}
+                    Fecha: {reserva.reserva.fecha_reserva}
                   </p>
                   <p className="card-text">
                     Precio Total: ${reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}

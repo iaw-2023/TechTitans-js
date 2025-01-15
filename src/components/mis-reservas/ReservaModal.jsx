@@ -59,7 +59,7 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
               <tbody>
                 {turnos.map(({ turno, cancha }, index) => (
                   <tr key={index}>
-                    <td>{new Date(turno.fecha_turno).toLocaleDateString('es-AR')}</td>
+                    <td>{turno.fecha_turno}</td>
                     <td>{turno.hora_turno}</td>
                     <td>{cancha.nombre}</td>
                     <td>{cancha.categoria?.nombre || 'Sin categoría'}</td>
