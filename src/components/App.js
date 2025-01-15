@@ -6,6 +6,7 @@ import Contacto from './contacto/Contacto.js';
 import Carrito from './carrito/CarritoReservas.js';
 import Reservas from './mis-reservas/Reservas.js'
 import TurnosDisponibles from './turnos/turnosDisponibles';
+import Chatbot from "./chatbot/Chatbot.js";
 import { CarritoProvider } from '../context/ShoppingCartContext';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/misReservas" element={<Reservas />} />
         </Routes>
+        <Chatbot />
       </Router>
     </CarritoProvider>
   );
