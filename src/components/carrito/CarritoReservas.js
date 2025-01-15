@@ -83,9 +83,10 @@ const CarritoReservas = () => {
     return turnosCarrito.reduce((total, turno) => total + parseInt(turno.cancha.precio), 0).toFixed(2);
   };
 
-  const confirmarEliminarElemento = (index) => {
-    eliminarElemento(index);
-    setMostrarConfirmacionEliminar(false);
+  const confirmarEliminarElemento = (id) => {
+    eliminarElemento(id); // Elimina el turno del carrito
+    setTurnoAEliminar(null);
+    setMostrarConfirmacionEliminar(false); // Cierra el modal
   };
 
   const comprarCarrito = async () => {
@@ -175,7 +176,7 @@ const CarritoReservas = () => {
               <TurnoCarrito
                 turno={turno}
                 confirmarEliminarElemento={() => {
-                  setTurnoAEliminar({ id: turno.id });
+                  setTurnoAEliminar(turno.id);
                   setMostrarConfirmacionEliminar(true);
                 }}
               />
@@ -217,31 +218,38 @@ const CarritoReservas = () => {
           </div>
         </Card>
       </div>
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
+      <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Gestionar reserva</Modal.Title>
+          <Modal.Title>¿Vaciar carrito?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {isAuthenticated ? (
-            <div>
-              <p>
-                Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la
-                misma. ¡Muchas gracias!
-              </p>
-              <button type="button" className="btn btn-success" onClick={comprarCarrito}>
-                Comprar
-              </button>
-              <div id="wallet_container"></div>
-            </div>
-          ) : (
-            <div>
-              <p>Debe iniciar sesión para realizar una reserva.</p>
-              <button type="button" className="btn btn-info" onClick={handleLogin}>
-                Iniciar sesión
-              </button>
-            </div>
-          )}
+          <p>¿Está seguro de que desea vaciar el carrito?</p>
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMostrarConfirmacion(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmarVaciarCarrito}>
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>¿Eliminar turno?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Está seguro de que desea eliminar este turno del carrito?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMostrarConfirmacionEliminar(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={() => confirmarEliminarElemento(turnoAEliminar)}>
+            Confirmar
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );
