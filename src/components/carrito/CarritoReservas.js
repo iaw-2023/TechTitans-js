@@ -30,6 +30,10 @@ const CarritoReservas = () => {
   const emailUsuario = isAuthenticated ? user.email : "";
   const [email, setEmail] = useState(emailUsuario);
 
+  const now = new Date();
+  console.log("Fecha y hora actual del navegador:", now.toString());
+  
+
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
       Swal.fire({
