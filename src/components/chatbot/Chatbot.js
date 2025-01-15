@@ -18,7 +18,7 @@ const Chatbot = () => {
         setMessages((prev) => [...prev, userMessage]);
 
         try {
-            const response = await fetch(`${API}/chatbot`, {
+            const response = await fetch(`${API}chatbot`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
