@@ -218,6 +218,46 @@ const CarritoReservas = () => {
           </div>
         </Card>
       </div>
+      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Gestionar reserva</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isAuthenticated ? (
+            <div>
+              <p>
+                Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la
+                misma. ¡Muchas gracias!
+              </p>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={comprarCarrito}
+              >
+                Comprar
+              </button>
+              <div id="wallet_container" style={{ marginTop: "20px" }}></div>
+            </div>
+          ) : (
+            <div>
+              <p>Debe iniciar sesión para realizar una reserva.</p>
+              <button
+                type="button"
+                className="btn btn-info"
+                onClick={handleLogin}
+              >
+                Iniciar sesión
+              </button>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Vaciar carrito?</Modal.Title>
