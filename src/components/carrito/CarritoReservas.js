@@ -195,7 +195,7 @@ const CarritoReservas = () => {
   return (
     <div>
       <div className="d-flex align-items-center justify-content-center">
-        <h1>CARRITO DE COMPRAS</h1>
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Carrito de reservas</h2>
       </div>
       <div>
         <Card.Body>

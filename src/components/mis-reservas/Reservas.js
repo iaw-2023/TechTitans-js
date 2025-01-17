@@ -115,7 +115,7 @@ const Reservas = () => {
   
   return (
     <div className="card-container">
-      <h1>Mis Reservas</h1>
+      <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Mis Reservas</h2>
       {alert && (
         <div className="alert alert-info" role="alert">
           {alert}

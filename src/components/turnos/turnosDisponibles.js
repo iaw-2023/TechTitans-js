@@ -106,47 +106,59 @@ const TurnosDisponibles = () => {
   const hours = Array.from({ length: 16 }, (_, i) => `${String(i + 8).padStart(2, '0')}:00:00`);
 
   return (
-    <div className="container py-5">
-      <h2 className="text-center mb-4">¿Qué día jugamos?</h2>
+    <div className="container mx-auto py-5 px-4">
+      <h2 className="text-center text-2xl font-bold mb-6 text-gray-800">
+        ¿Qué día jugamos?
+      </h2>
 
-      <div className="d-flex justify-content-center mb-4">
+      <div className="flex justify-center mb-6">
         <input
           type="date"
-          className="form-control w-auto"
+          className="px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
           value={selectedFecha || ''}
           onChange={handleFechaChange}
         />
       </div>
 
       {loading ? (
-        <div className="d-flex justify-content-center my-5">
-          <Spinner animation="border" variant="primary" />
+        <div className="flex justify-center my-10">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : turnosPorCancha.length === 0 && selectedFecha ? (
-        <div className="alert alert-primary text-center">No hay turnos disponibles</div>
+        <div className="text-center text-lg text-blue-600">
+          No hay turnos disponibles
+        </div>
       ) : (
         selectedFecha && (
           <>
-            <h3 className="text-center mb-3">Elegí cancha y horario:</h3>
-            <div className="table-responsive turnos-container">
-              <table className="table table-bordered text-center">
-                <thead className="table-light">
-                  <tr>
-                    <th>Cancha</th>
+            <h3 className="text-center text-xl font-semibold mb-4 text-gray-700">
+              Elegí cancha y horario:
+            </h3>
+            <div className="overflow-x-auto w-full custom-scrollbar">
+              <table className="min-w-full table-auto bg-white border-collapse border border-gray-300 rounded-lg">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-700">
+                    <th className="px-4 py-3 text-left rounded-tl-lg">Cancha</th>
                     {hours.map((hour) => (
-                      <th key={hour}>{hour.slice(0, -3)}</th>
+                      <th key={hour} className="px-4 py-3 text-center">
+                        {hour.slice(0, -3)}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {turnosPorCancha.map((cancha) => (
-                    <tr key={cancha.id}>
-                      <td>
-                        <strong>{cancha.nombre}</strong>
-                        <br />
-                        <span>
-                          {cancha.superficie} | {cancha.techo ? 'Con techo' : 'Sin techo'}
-                        </span>
+                    <tr key={cancha.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 bg-gray-50 border border-gray-300">
+                        <div className="p-4 bg-blue-100 rounded-md">
+                          <strong className="block text-blue-600">
+                            {cancha.nombre}
+                          </strong>
+                          <span className="text-gray-600 text-sm">
+                            {cancha.superficie} |{' '}
+                            {cancha.techo ? 'Con techo' : 'Sin techo'}
+                          </span>
+                        </div>
                       </td>
                       {hours.map((hour) => {
                         const turno = cancha.turnos.find((t) => t.hora_turno === hour);
@@ -155,17 +167,16 @@ const TurnosDisponibles = () => {
                         return (
                           <td
                             key={`${cancha.id}-${hour}`}
-                            className={`turno-cell ${
+                            className={`px-4 py-2 text-center border ${
                               turno
                                 ? isInCarrito
-                                  ? 'in-cart'
+                                  ? 'bg-green-200 text-green-800'
                                   : isSelected
-                                  ? 'selected'
-                                  : 'available'
-                                : 'unavailable'
+                                  ? 'bg-blue-200 text-blue-800'
+                                  : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
+                                : 'bg-gray-200 text-gray-500'
                             }`}
                             onClick={() => turno && !isInCarrito && toggleTurnoSeleccionado(turno)}
-                            style={{ cursor: turno && !isInCarrito ? 'pointer' : 'default' }}
                           >
                             {turno
                               ? isInCarrito
@@ -184,9 +195,12 @@ const TurnosDisponibles = () => {
             </div>
             {selectedTurno && !isTurnoInCarrito(selectedTurno.id) && (
               <div className="text-center mt-4">
-                <Button variant="success" onClick={agregarTurnoAlCarrito}>
+                <button
+                  className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition-colors"
+                  onClick={agregarTurnoAlCarrito}
+                >
                   Confirmar Selección
-                </Button>
+                </button>
               </div>
             )}
           </>

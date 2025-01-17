@@ -43,7 +43,8 @@ const Categoria = () => {
   return (
     <div>
       <div className='titulo'>
-      <h2>Seleccione la categoria deseada</h2>
+      <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
+        Seleccione la categoria deseada</h2>
       </div>
       <div className="container">
         <div className="imagen-grid">
