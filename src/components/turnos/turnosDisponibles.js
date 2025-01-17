@@ -2,186 +2,196 @@ import React, { useEffect, useState, useContext } from 'react';
 import { API } from '../../config';
 import './turnosDisponibles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Row, Col, Button, Modal } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
+import { Spinner, Button } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 import { CarritoContexto } from '../../context/ShoppingCartContext';
 
 const TurnosDisponibles = () => {
-  const [turnos, setTurnos] = useState([]);
+  const [turnosPorCancha, setTurnosPorCancha] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedTurno, setSelectedTurno] = useState(null);
-  const [modalReservaRealizada, setModalReservaRealizada] = useState(false);
-  const [loading, setLoading] = useState(false); // Estado de carga
   const { categoriaId } = useParams();
   const [selectedFecha, setSelectedFecha] = useState(null);
-
   const carritoContexto = useContext(CarritoContexto);
-  const { agregarItem } = carritoContexto;
+  const { agregarItem, carrito } = carritoContexto;
 
   useEffect(() => {
     const fetchTurnos = async () => {
-      setLoading(true); // Inicia el estado de carga
+      if (!selectedFecha) {
+        setTurnosPorCancha([]); // Limpiar turnos si no hay fecha seleccionada
+        return;
+      }
+
+      setLoading(true);
       try {
-        let url;
-
-        if (selectedFecha != null) {
-          url = `${API}turnos/fecha/cat/${selectedFecha}/${categoriaId}`;
-        } else {
-          url = `${API}turnos/dispCat/${categoriaId}`;
-        }
-
+        const url = `${API}turnos/fecha/cat/${selectedFecha}/${categoriaId}`;
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Error al obtener los turnos');
+          throw new Error(`Error al obtener los turnos: ${response.status}`);
         }
-
         const data = await response.json();
-        setTurnos(data);
-        console.log(data);
+
+        // Agrupar los turnos por cancha
+        const turnosAgrupados = data.reduce((acc, turno) => {
+          const canchaId = turno.cancha?.id;
+          if (!canchaId) {
+            console.warn('Turno con cancha inválida:', turno);
+            return acc;
+          }
+          if (!acc[canchaId]) {
+            acc[canchaId] = {
+              ...turno.cancha,
+              turnos: [],
+            };
+          }
+          acc[canchaId].turnos.push(turno);
+          return acc;
+        }, {});
+
+        setTurnosPorCancha(Object.values(turnosAgrupados));
       } catch (error) {
-        console.error('Error al obtener los turnos', error);
+        console.error('Error al cargar turnos:', error.message);
       } finally {
-        setLoading(false); // Finaliza el estado de carga
+        setLoading(false);
       }
     };
     fetchTurnos();
   }, [categoriaId, selectedFecha]);
 
   const handleFechaChange = (e) => {
-    const value = e.target.value;
-    setSelectedFecha(value ? value : null);
+    setSelectedFecha(e.target.value || null);
   };
 
-  const openModal = (turno) => {
-    setSelectedTurno(turno);
+  const toggleTurnoSeleccionado = (turno) => {
+    if (!turno || !turno.id) {
+      console.warn('Intento de seleccionar un turno inválido:', turno);
+      return;
+    }
+
+    if (selectedTurno?.id === turno.id) {
+      setSelectedTurno(null); // Deseleccionar si ya está seleccionado
+    } else {
+      setSelectedTurno(turno); // Seleccionar un único turno
+    }
   };
 
-  const closeModal = () => {
-    setSelectedTurno(null);
-    setModalReservaRealizada(false);
+  const agregarTurnoAlCarrito = () => {
+    if (!selectedTurno) {
+      console.warn('No hay turno seleccionado para agregar al carrito');
+      return;
+    }
+
+    const turnoData = {
+      id: selectedTurno.id,
+      fecha_turno: selectedTurno.fecha_turno,
+      hora_turno: selectedTurno.hora_turno,
+      cancha: {
+        nombre: selectedTurno.cancha.nombre,
+        precio: selectedTurno.cancha.precio,
+        superficie: selectedTurno.cancha.superficie,
+        techo: selectedTurno.cancha.techo,
+        cant_jugadores: selectedTurno.cancha.cant_jugadores,
+      },
+    };
+
+    console.log('Agregando turno al carrito:', turnoData);
+    agregarItem(turnoData.id, turnoData);
+    setSelectedTurno(null); // Limpiar la selección después de agregar al carrito
   };
 
-  const confirmarReserva = (turno) => {
-    console.log('turno ', turno, 'id ', turno.id);
-    agregarItem(turno.id, turno);
-    setSelectedTurno(null);
-    setModalReservaRealizada(true);
+  const isTurnoInCarrito = (turnoId) => {
+    return carrito.some((item) => item.id === turnoId);
   };
+
+  const hours = Array.from({ length: 16 }, (_, i) => `${String(i + 8).padStart(2, '0')}:00:00`);
 
   return (
-    <div className="card-container" style={{ padding: '5vh' }}>
-      <h2>Turnos Disponibles</h2>
-      <div className="filter-container">
+    <div className="container py-5">
+      <h2 className="text-center mb-4">¿Qué día jugamos?</h2>
+
+      <div className="d-flex justify-content-center mb-4">
         <input
           type="date"
+          className="form-control w-auto"
           value={selectedFecha || ''}
           onChange={handleFechaChange}
         />
       </div>
+
       {loading ? (
         <div className="d-flex justify-content-center my-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
+          <Spinner animation="border" variant="primary" />
         </div>
-      ) : turnos.length === 0 ? (
-        <div className="alert alert-primary">No hay turnos disponibles</div>
+      ) : turnosPorCancha.length === 0 && selectedFecha ? (
+        <div className="alert alert-primary text-center">No hay turnos disponibles</div>
       ) : (
-        <Row className="justify-content-center">
-          {turnos.map((turno) => (
-            <Col key={turno.id} sm={6} md={6} lg={4} xl={3}>
-              <Card className="card border-primary mb-3 text-bg-dark mb-3">
-                <Card.Body>
-                  <Card.Title>{turno.cancha.nombre}</Card.Title>
-                  <Card.Text>
-                    Fecha: {(() => {
-                      const fecha = new Date(turno.fecha_turno);
-                      fecha.setDate(fecha.getDate() + 1);
-                      const opcionesFecha = {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      };
-                      return fecha.toLocaleDateString('es-AR', opcionesFecha);
-                    })()}
-                  </Card.Text>
-                  <Card.Text>Hora: {turno.hora_turno}</Card.Text>
-                  <Card.Text>Precio: ${turno.cancha.precio}</Card.Text>
-                  <Button
-                    variant="primary"
-                    onClick={() => openModal(turno)}
-                    className="mr-2"
-                  >
-                    Ver Detalles
-                  </Button>
-                  <Button
-                    variant="success"
-                    onClick={() => {
-                      confirmarReserva(turno);
-                    }}
-                    className="mr-2"
-                  >
-                    Reservar
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
-
-      <Modal show={selectedTurno !== null} onHide={closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Detalles del Turno</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedTurno && (
-            <div>
-              <p>{selectedTurno.cancha.nombre}</p>
-              <p>
-                Fecha: {(() => {
-                  const fecha = new Date(selectedTurno.fecha_turno);
-                  fecha.setDate(fecha.getDate() + 1);
-                  const opcionesFecha = {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  };
-                  return fecha.toLocaleDateString('es-AR', opcionesFecha);
-                })()}
-              </p>
-              <p>Hora: {selectedTurno.hora_turno}</p>
-              <p>Precio: ${selectedTurno.cancha.precio}</p>
-              <p>Superficie: {selectedTurno.cancha.superficie}</p>
-              <p>Techada: {selectedTurno.cancha.techo ? 'Sí' : 'No'}</p>
-              <p>Cantidad de jugadores: {selectedTurno.cancha.cant_jugadores}</p>
+        selectedFecha && (
+          <>
+            <h3 className="text-center mb-3">Elegí cancha y horario:</h3>
+            <div className="table-responsive turnos-container">
+              <table className="table table-bordered text-center">
+                <thead className="table-light">
+                  <tr>
+                    <th>Cancha</th>
+                    {hours.map((hour) => (
+                      <th key={hour}>{hour.slice(0, -3)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {turnosPorCancha.map((cancha) => (
+                    <tr key={cancha.id}>
+                      <td>
+                        <strong>{cancha.nombre}</strong>
+                        <br />
+                        <span>
+                          {cancha.superficie} | {cancha.techo ? 'Con techo' : 'Sin techo'}
+                        </span>
+                      </td>
+                      {hours.map((hour) => {
+                        const turno = cancha.turnos.find((t) => t.hora_turno === hour);
+                        const isSelected = selectedTurno?.id === turno?.id;
+                        const isInCarrito = turno && isTurnoInCarrito(turno.id);
+                        return (
+                          <td
+                            key={`${cancha.id}-${hour}`}
+                            className={`turno-cell ${
+                              turno
+                                ? isInCarrito
+                                  ? 'in-cart'
+                                  : isSelected
+                                  ? 'selected'
+                                  : 'available'
+                                : 'unavailable'
+                            }`}
+                            onClick={() => turno && !isInCarrito && toggleTurnoSeleccionado(turno)}
+                            style={{ cursor: turno && !isInCarrito ? 'pointer' : 'default' }}
+                          >
+                            {turno
+                              ? isInCarrito
+                                ? 'En carrito'
+                                : isSelected
+                                ? 'Seleccionado'
+                                : 'Disponible'
+                              : 'No disponible'}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={modalReservaRealizada} onHide={closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>¡Tomamos Nota!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Tu reserva se encuentra en el carrito.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Link to="/carrito">
-            <Button variant="primary">Ir al Carrito</Button>
-          </Link>
-          <Link to="/reservar">
-            <Button variant="success">Seguir reservando turnos</Button>
-          </Link>
-        </Modal.Footer>
-      </Modal>
+            {selectedTurno && !isTurnoInCarrito(selectedTurno.id) && (
+              <div className="text-center mt-4">
+                <Button variant="success" onClick={agregarTurnoAlCarrito}>
+                  Confirmar Selección
+                </Button>
+              </div>
+            )}
+          </>
+        )
+      )}
     </div>
   );
 };

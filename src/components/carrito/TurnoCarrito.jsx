@@ -3,6 +3,7 @@ import { Card, Button, Modal } from 'react-bootstrap';
 
 const TurnoCarrito = ({ turno, index, confirmarEliminarElemento}) => {
     const [selectedTurno, setSelectedTurno] = useState(null);
+    console.log("Turno recibido en TurnoCarrito:", turno);
     const { turno_id, fecha_turno, hora_turno, cancha } = turno;
     
     const openModal = (turno) => {

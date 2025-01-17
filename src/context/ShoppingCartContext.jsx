@@ -20,7 +20,7 @@ const CarritoProvider = ({ children }) => {
   }, [carrito]);
 
   const agregarItem = (turnoId, turno) => {
-    console.log("arrivba"+turnoId+ "sda"+ turno)
+    console.log("item agregado id"+turnoId)
     const productoExistente = carrito.find(
       (item) => item.turno === turnoId
     );
