@@ -203,7 +203,7 @@ const CarritoReservas = () => {
         </Card.Body>
       </div>
       <div className="d-flex align-items-center justify-content-center">
-        <Card className="card border-primary mb-3 text-bg-dark mb-3" style={{ padding: "5vh" }}>
+        <Card className="card border-primary mb-3 text-bg-dark" style={{ padding: "5vh" }}>
           <div className="justify-content-center">
             <div className="precio-container">
               <p className="precio-total">PRECIO TOTAL: </p>
