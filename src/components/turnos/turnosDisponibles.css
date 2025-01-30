@@ -1,26 +1,182 @@
-.card-container {
-  display: column;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  grid-gap: 20px;
-  align-items: center;
-  justify-content: center;
+.turnos-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-.filter-container {
+.turnos-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.date-picker-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.date-picker {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loading-spinner,
+.no-turnos-message {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  height: 100%;
 }
 
-.filter-container label {
-  margin-right: 10px;
-  font-weight: bold;
+.turnos-subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
 }
 
-.filter-container input[type="date"] {
-  padding: 5px;
+.turnos-grid {
+  display: grid;
+  grid-template-columns: minmax(100px, auto) repeat(4, minmax(150px, 1fr));
+  gap: 0.25rem;
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  max-height: 60vh;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  border: 2px solid #000000;
+  padding: 0.5rem;
+  background-color: #f8fafc;
 }
+
+.turnos-header {
+  display: contents;
+  position: sticky;
+  top: 0;
+  background-color: #f8fafc;
+  z-index: 10;
+}
+
+.cancha-header,
+.hour-header {
+  background-color: #e2e8f0;
+  padding: 0.25rem;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.cancha-row {
+  display: contents;
+}
+
+.cancha-info {
+  background-color: #e6f0ff;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.cancha-info strong {
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.turno-button {
+  padding: 0.25rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.turno-button.no-disponible {
+  background-color: #3b82f6;
+  color: white;
+  cursor: not-allowed;
+}
+
+.turno-button.en-carrito {
+  background-color: #10b981;
+  color: white;
+  cursor: not-allowed;
+}
+
+.turno-button.seleccionado {
+  background-color: #93c5fd;
+  color: #1e40af;
+}
+
+.turno-button.disponible {
+  background-color: #34d399;
+  color: white;
+}
+
+.turno-button.disponible:hover {
+  background-color: #059669;
+}
+
+.confirmar-seleccion-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.confirmar-seleccion-button {
+  padding: 0.5rem 1rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.confirmar-seleccion-button:hover {
+  background-color: #059669;
+}
+
+@media (max-width: 768px) {
+  .turnos-grid {
+    font-size: 0.7rem;
+    grid-template-columns: minmax(80px, auto) repeat(4, minmax(60px, 1fr));
+    gap: 0.15rem;
+    max-width: 100%;
+  }
+
+  .turno-button {
+    padding: 0.2rem;
+    font-size: 0.65rem;
+  }
+
+  .cancha-header,
+  .hour-header,
+  .cancha-info {
+    padding: 0.2rem;
+    font-size: 0.7rem;
+  }
+
+  .cancha-info strong {
+    font-size: 0.75rem;
+  }
+}
+
