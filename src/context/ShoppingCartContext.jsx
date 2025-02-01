@@ -1,69 +1,51 @@
-import React, { createContext, useState , useEffect } from "react";
+import { createContext, useState, useEffect } from "react"
 
-export const CarritoContexto = createContext(null);
+export const CarritoContexto = createContext(null)
 
 const CarritoProvider = ({ children }) => {
   const [carrito, setCarrito] = useState(() => {
-    const carritoGuardado = localStorage.getItem('carrito');
-    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
-  });  
+    const carritoGuardado = localStorage.getItem("carrito")
+    return carritoGuardado ? JSON.parse(carritoGuardado) : []
+  })
 
   useEffect(() => {
-    const carritoGuardado = localStorage.getItem('carrito');
+    const carritoGuardado = localStorage.getItem("carrito")
     if (carritoGuardado) {
-      setCarrito(JSON.parse(carritoGuardado));
+      setCarrito(JSON.parse(carritoGuardado))
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-  }, [carrito]);
+    localStorage.setItem("carrito", JSON.stringify(carrito))
+  }, [carrito])
 
   const agregarItem = (turnoId, turno) => {
-    console.log("item agregado id"+turnoId)
-    const productoExistente = carrito.find(
-      (item) => item.turno === turnoId
-    );
-    
-    if (productoExistente) {
-      const carritoActualizado = carrito.map((item) => {
-        if (item.turno === turnoId) {
-          return {
-            turno: turnoId, ...turno,
-          };
-        } else {
-          return item;
-        }
-      });
-  
-      setCarrito(carritoActualizado);
-    } else {
-      const itemNuevo = {
-        turno: turnoId, ...turno,
-      };
-  
-      setCarrito([...carrito, itemNuevo]);
-    }
-  };
+    setCarrito((prevCarrito) => {
+      const turnoExistente = prevCarrito.find((item) => item.id === turnoId)
+      if (turnoExistente) {
+        console.log("El turno ya existe en el carrito")
+        return prevCarrito
+      } else {
+        console.log("Agregando nuevo turno al carrito:", turno)
+        return [...prevCarrito, { id: turnoId, ...turno }]
+      }
+    })
+  }
 
   const vaciarCarrito = () => {
-    setCarrito([]);
-  };
+    setCarrito([])
+  }
 
-  const eliminarElemento = (index) => {
-    const nuevoCarrito = [...carrito];
-    nuevoCarrito.splice(index, 1);
-    setCarrito(nuevoCarrito);
-  };
+  const eliminarElemento = (turnoId) => {
+    setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id !== turnoId))
+  }
 
   return (
-    <CarritoContexto.Provider
-      value={{ carrito, agregarItem, vaciarCarrito, eliminarElemento }}
-    >
+    <CarritoContexto.Provider value={{ carrito, agregarItem, vaciarCarrito, eliminarElemento }}>
       {children}
     </CarritoContexto.Provider>
-  );
-};
+  )
+}
 
-export { CarritoProvider };
-//export { CarritoProvider, CarritoContexto };
+export { CarritoProvider }
+

@@ -19,7 +19,7 @@ const TurnosDisponibles = () => {
     const today = new Date().toISOString().split("T")[0]
     setSelectedFecha(today)
   }, [])
-  
+
   useEffect(() => {
     const fetchTurnos = async () => {
       if (!selectedFecha) {
@@ -94,7 +94,6 @@ const TurnosDisponibles = () => {
       },
     }
 
-    console.log("Agregando turno al carrito:", turnoData)
     agregarItem(turnoData.id, turnoData)
     setSelectedTurno(null)
   }
