@@ -25,11 +25,6 @@
   margin-right: 10px;
 }
 
-.carrito-logo img {
-  height: 50px;
-  margin-right: 10px;
-}
-
 .nav-menu {
   list-style-type: none;
   margin: 0;
@@ -102,6 +97,38 @@
   color: rgb(243, 240, 42);
 }
 
+.carrito-icon {
+  position: relative;
+}
+
+.carrito-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.carrito-link:hover {
+  color: rgb(243, 240, 42);
+}
+
+.carrito-icon:hover{
+  color: rgb(243, 240, 42);  
+}
+
+.carrito-counter {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 768px) {
   .navbar-container {
     justify-content: space-between;
@@ -138,7 +165,7 @@
     margin: 10px 0;
   }
 
-  .carrito-logo {
+  .carrito-icon {
     margin: 10px 0;
   }
 

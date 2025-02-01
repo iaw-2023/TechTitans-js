@@ -1,13 +1,15 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import "./Navbar.css"
 import logo from "../../components/imagenes/logo.png"
-import carrito from "../../components/imagenes/carrito.png"
+import { CarritoContexto } from "../../context/ShoppingCartContext"
+import { ShoppingCart } from "phosphor-react"
 
 const Navbar = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0()
   const [isOpen, setIsOpen] = useState(false)
+  const { carrito } = useContext(CarritoContexto)
 
   const handleLogin = () => {
     loginWithRedirect()
@@ -46,9 +48,10 @@ const Navbar = () => {
               Contacto
             </Link>
           </li>
-          <li className="carrito-logo">
-            <Link className="nav-link" to="/carrito" onClick={toggleMenu}>
-              <img src={carrito || "/placeholder.svg"} alt="Carrito" />
+          <li className="carrito-icon">
+            <Link className="nav-link carrito-link" to="/carrito" onClick={toggleMenu}>
+              <ShoppingCart size={24} />
+              {carrito.length > 0 && <span className="carrito-counter">{carrito.length}</span>}
             </Link>
           </li>
           <li className="nav-item">
