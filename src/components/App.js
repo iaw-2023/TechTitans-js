@@ -9,6 +9,7 @@ import TurnosDisponibles from './turnos/turnosDisponibles';
 import Chatbot from "./chatbot/Chatbot.js";
 import { CarritoProvider } from '../context/ShoppingCartContext';
 import { useAuth0 } from '@auth0/auth0-react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import '../tailwind.css';
 

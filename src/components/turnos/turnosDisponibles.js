@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { Spinner } from "react-bootstrap"
 import { useParams } from "react-router-dom"
 import { CarritoContexto } from "../../context/ShoppingCartContext"
+import { categorias } from "../categoria/Categorias" // Importamos las categorías
 
 const TurnosDisponibles = () => {
   const [turnosPorCancha, setTurnosPorCancha] = useState([])
@@ -16,8 +17,10 @@ const TurnosDisponibles = () => {
   const { agregarItem, carrito } = carritoContexto
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]
-    setSelectedFecha(today)
+    const today = new Date()
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset())
+    const todayFormatted = today.toISOString().split("T")[0] // Formato YYYY-MM-DD
+    setSelectedFecha(todayFormatted)
   }, [])
 
   useEffect(() => {
@@ -63,7 +66,15 @@ const TurnosDisponibles = () => {
   }, [categoriaId, selectedFecha])
 
   const handleFechaChange = (e) => {
-    setSelectedFecha(e.target.value || null)
+    const selectedDate = new Date(e.target.value)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (selectedDate >= today) {
+      setSelectedFecha(e.target.value)
+    } else {
+      alert("No puedes seleccionar fechas pasadas.")
+    }
   }
 
   const toggleTurnoSeleccionado = (turno) => {
@@ -86,11 +97,8 @@ const TurnosDisponibles = () => {
       fecha_turno: selectedTurno.fecha_turno,
       hora_turno: selectedTurno.hora_turno,
       cancha: {
-        nombre: selectedTurno.cancha.nombre,
-        precio: selectedTurno.cancha.precio,
-        superficie: selectedTurno.cancha.superficie,
-        techo: selectedTurno.cancha.techo,
-        cant_jugadores: selectedTurno.cancha.cant_jugadores,
+        ...selectedTurno.cancha,
+        categoria_nombre: categorias[selectedTurno.cancha.id_categoria],
       },
     }
 
