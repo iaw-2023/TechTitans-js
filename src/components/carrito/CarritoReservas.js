@@ -1,27 +1,21 @@
 import { useContext, useState, useEffect, useCallback } from "react"
 import { API } from "../../config.js"
-import Card from "react-bootstrap/Card"
-import Modal from "react-bootstrap/Modal"
-import Button from "react-bootstrap/Button"
+import { Card, Modal, Button, Table, Spinner } from "react-bootstrap"
 import BotonVaciar from "../botones/BotonVaciar.js"
 import BotonComprarCarrito from "../botones/BotonComprarCarrito.js"
 import { CarritoContexto } from "../../context/ShoppingCartContext.jsx"
-import TurnoCarrito from "./TurnoCarrito.jsx"
 import Swal from "sweetalert2"
 import "./CarritoReservas.css"
-import { Row, Col, Spinner } from "react-bootstrap"
-
 import { useAuth0 } from "@auth0/auth0-react"
 
-// Asegúrate de cargar correctamente el SDK de Mercado Pago
 const mp = new window.MercadoPago("APP_USR-0144850f-6a77-4ee3-b6bf-390c8bbe3cf7", {
-  locale: "es-AR", // Idioma de preferencia
+  locale: "es-AR",
 })
 
 const CarritoReservas = () => {
   const { vaciarCarrito, carrito, eliminarElemento } = useContext(CarritoContexto)
   const [turnosCarrito, setTurnosCarrito] = useState([])
-  const [loading, setLoading] = useState(true) // Estado de carga
+  const [loading, setLoading] = useState(true)
   const [mostrarModal, setMostrarModal] = useState(false)
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false)
   const [mostrarConfirmacionEliminar, setMostrarConfirmacionEliminar] = useState(false)
@@ -29,6 +23,7 @@ const CarritoReservas = () => {
   const { isAuthenticated, loginWithRedirect, user } = useAuth0()
   const emailUsuario = isAuthenticated ? user.email : ""
   const [email, setEmail] = useState(emailUsuario)
+  const [selectedTurno, setSelectedTurno] = useState(null) // Added state for details modal
 
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
@@ -107,7 +102,6 @@ const CarritoReservas = () => {
 
       console.log("Preference ID recibido:", preference_id)
 
-      // Crear botón de MercadoPago
       const bricksBuilder = mp
         .bricks()
         .create("wallet", "wallet_container", {
@@ -140,7 +134,7 @@ const CarritoReservas = () => {
     obtenerTurnos()
   }, [obtenerTurnos])
 
-  const renderProductos = () => {
+  const renderTabla = () => {
     if (loading) {
       return (
         <div className="d-flex justify-content-center my-5">
@@ -156,20 +150,42 @@ const CarritoReservas = () => {
     }
 
     return (
-      <div style={{ padding: "5vh" }}>
-        <Row className="custom-row">
-          {turnosCarrito.map((turno) => (
-            <Col sm={12} md={6} lg={4} key={turno.id}>
-              <TurnoCarrito
-                turno={turno}
-                confirmarEliminarElemento={() => {
-                  setTurnoAEliminar(turno.id)
-                  setMostrarConfirmacionEliminar(true)
-                }}
-              />
-            </Col>
-          ))}
-        </Row>
+      <div className="table-responsive">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {turnosCarrito.map((turno) => (
+              <tr key={turno.id}>
+                <td>{new Date(turno.fecha_turno).toLocaleDateString("es-AR")}</td>
+                <td>{turno.hora_turno}</td>
+                <td>{turno.cancha.categoria_nombre}</td>
+                <td>${turno.cancha.precio}</td>
+                <td>
+                  <div className="action-buttons">
+                    <Button variant="info" size="sm" onClick={() => openModal(turno)}>
+                      Ver detalle
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => setMostrarConfirmacionEliminar(true) || setTurnoAEliminar(turno.id)}
+                    >
+                      Borrar turno
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
     )
   }
@@ -179,32 +195,28 @@ const CarritoReservas = () => {
     setMostrarConfirmacion(false)
   }
 
+  const openModal = (turno) => {
+    // Updated openModal function
+    setSelectedTurno(turno)
+  }
+
   return (
-    <div>
-      <div className="d-flex align-items-center justify-content-center">
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Carrito de reservas</h2>
-      </div>
-      <div>
+    <div className="carrito-reservas-container">
+      <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Carrito de reservas</h2>
+      <Card>
         <Card.Body>
-          <div>{renderProductos()}</div>
+          {renderTabla()}
+          {turnosCarrito.length > 0 && (
+            <div className="mt-4 d-flex flex-column align-items-center">
+              <h4 className="precio-total">Precio Total: ${obtenerPrecio()}</h4>
+              <div className="buttons-container">
+                <BotonVaciar onClick={() => setMostrarConfirmacion(true)} />
+                <BotonComprarCarrito onClick={mostrarModalCliente} />
+              </div>
+            </div>
+          )}
         </Card.Body>
-      </div>
-      <div className="d-flex align-items-center justify-content-center">
-        <Card className="card border-primary mb-3 text-bg-dark" style={{ padding: "5vh" }}>
-          <div className="justify-content-center">
-            <div className="precio-container">
-              <p className="precio-total">PRECIO TOTAL: </p>
-              <p className="precio-total-2">${obtenerPrecio()}</p>
-            </div>
-            <div className="boton-carrito">
-              <BotonVaciar className="boton-carrito" onClick={() => setMostrarConfirmacion(true)} />
-            </div>
-            <div className="boton-carrito">
-              <BotonComprarCarrito className="boton-carrito" onClick={mostrarModalCliente} />
-            </div>
-          </div>
-        </Card>
-      </div>
+      </Card>
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Gestionar reserva</Modal.Title>
@@ -236,7 +248,6 @@ const CarritoReservas = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Vaciar carrito?</Modal.Title>
@@ -253,7 +264,6 @@ const CarritoReservas = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
       <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Eliminar turno?</Modal.Title>
@@ -267,6 +277,36 @@ const CarritoReservas = () => {
           </Button>
           <Button variant="danger" onClick={() => confirmarEliminarElemento(turnoAEliminar)}>
             Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={selectedTurno !== null} onHide={() => setSelectedTurno(null)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalles del Turno</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTurno && (
+            <div>
+              <p>{selectedTurno.cancha.nombre}</p>
+              <p>
+                Fecha: {(() => {
+                  const fecha = new Date(selectedTurno.fecha_turno)
+                  fecha.setDate(fecha.getDate() + 1)
+                  const opcionesFecha = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+                  return fecha.toLocaleDateString("es-AR", opcionesFecha)
+                })()}
+              </p>
+              <p>Hora: {selectedTurno.hora_turno}</p>
+              <p>Precio: ${selectedTurno.cancha.precio}</p>
+              <p>Superficie: {selectedTurno.cancha.superficie}</p>
+              <p>Techada: {selectedTurno.cancha.techo ? "Sí" : "No"}</p>
+              <p>Cantidad de jugadores: {selectedTurno.cancha.cant_jugadores}</p>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setSelectedTurno(null)}>
+            Cerrar
           </Button>
         </Modal.Footer>
       </Modal>
