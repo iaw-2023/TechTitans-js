@@ -4,6 +4,7 @@ const InstallPWA = () => {
   const [promptEvent, setPromptEvent] = useState(null);
 
   useEffect(() => {
+    // Captura el evento 'beforeinstallprompt' para habilitar la instalación
     const handler = (event) => {
       event.preventDefault();
       setPromptEvent(event);
@@ -31,11 +32,13 @@ const InstallPWA = () => {
   };
 
   return (
-    promptEvent && (
-      <button onClick={handleInstallClick} className="install-pwa-button">
-        Instalar App
-      </button>
-    )
+    <div className="install-pwa-container">
+      {promptEvent && (
+        <button onClick={handleInstallClick} className="install-pwa-button">
+          Instalar App
+        </button>
+      )}
+    </div>
   );
 };
 
