@@ -203,7 +203,7 @@ const CarritoReservas = () => {
   return (
     <div className="carrito-reservas-container">
       <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Carrito de reservas</h2>
-      <Card>
+
         <Card.Body>
           {renderTabla()}
           {turnosCarrito.length > 0 && (
@@ -216,7 +216,7 @@ const CarritoReservas = () => {
             </div>
           )}
         </Card.Body>
-      </Card>
+
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Gestionar reserva</Modal.Title>

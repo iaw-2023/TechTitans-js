@@ -5,13 +5,10 @@
   margin: 0 auto;
 }
 
-/* Estilo específico para la tarjeta del carrito */
-.carrito-card {
-  background-color: rgba(255, 255, 255, 0.34) !important; /* Equivalente a #ffffff57 */
-}
+
 
 /* Asegurarse de que el fondo se aplique también al cuerpo de la tarjeta */
-.carrito-card .card-body {
+.card-body {
   background-color: transparent;
 }
 
