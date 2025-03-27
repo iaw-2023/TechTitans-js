@@ -1,5 +1,4 @@
 import { useState } from "react"
-import "./Categorias.css"
 import futbol from "../../components/imagenes/futbol.png"
 import basquet from "../../components/imagenes/basquet.png"
 import tenis from "../../components/imagenes/tenis.png"
@@ -25,42 +24,33 @@ const Categoria = () => {
 
   const [hoveredIndex, setHoveredIndex] = useState(null)
 
-  const handleMouseEnter = (index) => {
-    setHoveredIndex(index)
-  }
-
-  const handleMouseLeave = () => {
-    setHoveredIndex(null)
-  }
-
   return (
-    <div>
-      <div className="titulo">
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Seleccione la categoria deseada</h2>
-      </div>
-      <div className="container">
-        <div className="imagen-grid">
-          {imagenes.map((imagen, index) => (
-            <div
-              key={index}
-              className="imagen-item"
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={handleMouseLeave}
-            >
-              <a href={"/reservar/dispCat" + imagen.link}>
-                <img
-                  src={imagen.nombre || "/placeholder.svg"}
-                  alt={`Imagen ${categorias[imagen.id]}`}
-                  style={{ filter: hoveredIndex === index ? "none" : "grayscale(100%)" }}
-                />
-              </a>
-            </div>
-          ))}
-        </div>
+    <div className="py-8 px-4">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Seleccione la categoría deseada
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {imagenes.map((imagen, index) => (
+          <a
+            key={index}
+            href={"/reservar/dispCat" + imagen.link}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            className="transition transform hover:scale-105"
+          >
+            <img
+              src={imagen.nombre || "/placeholder.svg"}
+              alt={`Imagen ${categorias[imagen.id]}`}
+              className={`rounded-lg w-full shadow-md ${
+                hoveredIndex === index ? "" : "grayscale"
+              }`}
+            />
+          </a>
+        ))}
       </div>
     </div>
   )
 }
 
 export default Categoria
-
