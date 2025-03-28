@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
-import Main from './main.js';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Categorias from './categoria/Categorias.js'
 import Navbar from './navbar/Navbar.js';
 import Contacto from './contacto/Contacto.js';
@@ -13,18 +12,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InstallPWA from './InstallPWA.js';
 import '../tailwind.css';
 
-
 function App() {
   const { isAuthenticated, user } = useAuth0();
-
   
   return (
     <CarritoProvider>
       <Router>
         <Navbar isAuthenticated={isAuthenticated} user={user} />
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/reservar" element={<Categorias />} />
+          {/* Asignar Categorias directamente a la ruta principal */}
+          <Route path="/" element={<Categorias />} />
           <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/carrito" element={<Carrito />} />

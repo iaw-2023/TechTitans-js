@@ -1,4 +1,4 @@
-import { useState, useContext, useRef, useEffect } from "react"
+import { useState, useContext, useRef, useEffect, useCallback, memo } from "react"
 import { Link } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import "./Navbar.css"
@@ -6,14 +6,6 @@ import logo from "../../components/imagenes/logo.png"
 import { CarritoContexto } from "../../context/ShoppingCartContext"
 import { ShoppingCart, Trash } from "phosphor-react"
 import { Modal, Button } from "react-bootstrap"
-
-const categorias = {
-  1: "Fútbol",
-  2: "Tenis",
-  3: "Básquet",
-  4: "Pádel",
-  5: "Handball",
-}
 
 const Navbar = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0()
@@ -24,21 +16,22 @@ const Navbar = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [turnoToDelete, setTurnoToDelete] = useState(null)
 
-  const handleLogin = () => {
+  // Memoizar funciones de manejo para evitar recreaciones
+  const handleLogin = useCallback(() => {
     loginWithRedirect()
-  }
+  }, [loginWithRedirect])
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout({ returnTo: window.location.origin })
-  }
+  }, [logout])
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-  }
+  const toggleMenu = useCallback(() => {
+    setIsOpen(prevState => !prevState)
+  }, [])
 
-  const toggleCart = () => {
-    setIsCartOpen(!isCartOpen)
-  }
+  const toggleCart = useCallback(() => {
+    setIsCartOpen(prevState => !prevState)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,45 +46,50 @@ const Navbar = () => {
     }
   }, [])
 
-  const calculateTotal = () => {
+  // Memoizar el cálculo del total para evitar recálculos innecesarios
+  const calculateTotal = useCallback(() => {
     return carrito.reduce((total, item) => total + Number.parseFloat(item.cancha.precio), 0).toFixed(2)
-  }
+  }, [carrito])
 
-  const handleDeleteTurno = (turno) => {
+  const handleDeleteTurno = useCallback((turno) => {
     setTurnoToDelete(turno)
     setShowConfirmModal(true)
-  }
+  }, [])
 
-  const confirmDeleteTurno = () => {
+  const confirmDeleteTurno = useCallback(() => {
     if (turnoToDelete) {
       eliminarElemento(turnoToDelete.id)
     }
     setShowConfirmModal(false)
     setTurnoToDelete(null)
-  }
+  }, [turnoToDelete, eliminarElemento])
 
-  const formatDate = (dateString) => {
+  // Funciones de formato memoizadas
+  const formatDate = useCallback((dateString) => {
     const date = new Date(dateString)
     date.setDate(date.getDate() + 1)
     return date.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
-  }
+  }, [])
 
-  const formatTime = (timeString) => {
+  const formatTime = useCallback((timeString) => {
     return timeString.slice(0, 5)
-  }
+  }, [])
+
+  // Memoizar el contador del carrito
+  const cartItemCount = carrito.length
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
-          <img src={logo || "/placeholder.svg"} alt="Logo" />
-        </Link>
+      <Link to="/" className="navbar-logo">
+        <img src={logo || "/placeholder.svg"} alt="Logo" />
+      </Link>
         <div className="menu-icon" onClick={toggleMenu}>
           <span>{isOpen ? "✕" : "☰"}</span>
         </div>
         <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
           <li id="reservar" className="nav-item">
-            <Link className="nav-link" to="/reservar" onClick={toggleMenu}>
+            <Link className="nav-link" to="/" onClick={toggleMenu}>
               Reservar
             </Link>
           </li>
@@ -108,12 +106,12 @@ const Navbar = () => {
           <li className="carrito-icon" ref={cartRef}>
             <div className="nav-link carrito-link" onClick={toggleCart}>
               <ShoppingCart size={24} />
-              {carrito.length > 0 && <span className="carrito-counter">{carrito.length}</span>}
+              {cartItemCount > 0 && <span className="carrito-counter">{cartItemCount}</span>}
             </div>
             {isCartOpen && (
               <div className="cart-dropdown">
                 <h3>Carrito de Compras</h3>
-                {carrito.length === 0 ? (
+                {cartItemCount === 0 ? (
                   <p>No hay turnos en el carrito</p>
                 ) : (
                   <>
@@ -203,5 +201,5 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
-
+// Memoizar el componente completo para evitar renderizados innecesarios
+export default memo(Navbar)
