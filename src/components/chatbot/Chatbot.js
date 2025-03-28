@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "./Chatbot.css"
 import { API } from "../../config.js"
 
@@ -8,9 +8,20 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
+  const [showHelpBubble, setShowHelpBubble] = useState(true)
+
+  // Hide help bubble after 10 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHelpBubble(false)
+    }, 10000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const toggleChat = () => {
     setIsOpen(!isOpen)
+    setShowHelpBubble(false) // Hide bubble when chat is opened
   }
 
   const handleSendMessage = async () => {
@@ -45,6 +56,7 @@ const Chatbot = () => {
 
   return (
     <div className={`chatbot-container ${isOpen ? "open" : ""}`}>
+      {showHelpBubble && !isOpen && <div className="help-bubble">¿Necesitas ayuda?</div>}
       <div className="chatbot-header" onClick={toggleChat}>
         {isOpen ? "✖️" : "🤖"}
       </div>
@@ -73,3 +85,4 @@ const Chatbot = () => {
 }
 
 export default Chatbot
+
