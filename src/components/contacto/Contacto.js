@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import bosters from '../../components/imagenes/bosters.png';
+
 const Contacto = () => {
   return (
     <div className="text-center">

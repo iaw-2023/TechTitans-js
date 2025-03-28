@@ -35,7 +35,7 @@ const InstallPWA = () => {
     <div className="install-pwa-container">
       {promptEvent && (
         <button onClick={handleInstallClick} className="install-pwa-button">
-          Instalar App
+          
         </button>
       )}
     </div>
