@@ -20,7 +20,6 @@ function App() {
       <Router>
         <Navbar isAuthenticated={isAuthenticated} user={user} />
         <Routes>
-          {/* Asignar Categorias directamente a la ruta principal */}
           <Route path="/" element={<Categorias />} />
           <Route path="/reservar/dispCat/:categoriaId" element={<TurnosDisponibles />} />
           <Route path="/contacto" element={<Contacto />} />

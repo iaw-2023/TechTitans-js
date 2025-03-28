@@ -5,8 +5,6 @@
   margin: 0 auto;
 }
 
-
-
 /* Asegurarse de que el fondo se aplique también al cuerpo de la tarjeta */
 .card-body {
   background-color: transparent;
@@ -122,4 +120,3 @@
     width: 100%; /* Ocupa todo el ancho en móvil */
   }
 }
-
