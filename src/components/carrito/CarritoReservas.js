@@ -74,7 +74,7 @@ const CarritoReservas = () => {
   const comprarCarrito = async () => {
     try {
       const detalles = carrito.map((item) => ({
-        id_turno: item.turno,
+        id_turno: item.id,
         precio: item.cancha.precio,
       }))
 
