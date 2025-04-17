@@ -45,6 +45,7 @@
   flex-wrap: wrap;
 }
 
+/* --- Logo --- */
 .navbar-logo img {
   height: 50px;
 }
@@ -56,13 +57,8 @@
   gap: 20px;
 }
 
-.nav-items {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+.nav-item {
+  color: inherit;
 }
 
 .nav-item .nav-link,
@@ -208,12 +204,12 @@
   color: #d32f2f;
 }
 
-/* --- Desktop only --- */
+/* --- Elementos solo en desktop --- */
 .desktop-only {
   display: flex;
 }
 
-/* --- Responsive (mobile) --- */
+/* --- Responsive --- */
 @media screen and (max-width: 768px) {
   .navbar-left,
   .navbar-right {
@@ -240,7 +236,7 @@
     width: 100%;
     background-color: rgba(255, 255, 255, 0.95);
     position: absolute;
-    top: 70px;
+    top: 60px;
     left: 0;
     padding: 20px 0;
     z-index: 1050;
@@ -252,12 +248,14 @@
   }
 
   .nav-items {
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    align-items: center;
+    list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
 
   .nav-item {
