@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Categorias from './categoria/Categorias.js'
-import Navbar from './navbar/Navbar.jsx';
+import Navbar from './navbar/Navbar.js';
 import Contacto from './contacto/Contacto.js';
 import Carrito from './carrito/CarritoReservas.js';
 import Reservas from './mis-reservas/Reservas.js'
