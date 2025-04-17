@@ -1,4 +1,4 @@
-/* --- Navbar base --- */
+/* General navbar */
 .navbar {
   background-color: transparent;
   padding: 10px;
@@ -15,49 +15,28 @@
 .navbar-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
   max-width: 1200px;
-  padding: 0 20px;
 }
 
-/* --- Secciones distribuidas --- */
-.navbar-left,
-.navbar-center,
-.navbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-center {
-  flex-grow: 1;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.navbar-right {
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-/* --- Logo --- */
+/* Logo */
 .navbar-logo img {
   height: 50px;
   margin-right: 10px;
 }
 
-/* --- Menú --- */
+/* Menú horizontal */
 .nav-menu {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
   align-items: center;
-  gap: 15px;
 }
 
 .nav-item {
-  color: inherit;
+  margin-right: 10px;
 }
 
 #reservar {
@@ -87,7 +66,11 @@
   color: rgb(243, 240, 42);
 }
 
-/* --- Links --- */
+.nav-item:last-child {
+  margin-right: 0;
+}
+
+/* Estilo general de links */
 .nav-link {
   text-decoration: none;
   color: #333;
@@ -101,7 +84,7 @@
   color: rgb(243, 240, 42);
 }
 
-/* --- Menú hamburguesa --- */
+/* Ícono hamburguesa (☰) */
 .menu-icon {
   display: none;
   font-size: 1.8rem;
@@ -117,7 +100,7 @@
   background-color: #555;
 }
 
-/* --- Carrito --- */
+/* Carrito */
 .carrito-icon {
   position: relative;
 }
@@ -151,7 +134,7 @@
   font-weight: bold;
 }
 
-/* --- Dropdown carrito --- */
+/* Dropdown del carrito */
 .cart-dropdown {
   position: absolute;
   top: 100%;
@@ -233,19 +216,15 @@
   color: #d32f2f;
 }
 
-/* --- Responsive --- */
+/* Responsive */
 @media screen and (max-width: 768px) {
   .navbar-container {
-    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0 20px;
   }
 
   .menu-icon {
     display: block;
-  }
-
-  .navbar-center {
-    width: 100%;
-    order: 3;
   }
 
   .nav-menu {
@@ -253,10 +232,14 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    position: absolute;
+    top: 80px;
+    left: 0;
     background-color: rgba(255, 255, 255, 0.95);
     padding: 20px 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1050;
+    transition: all 0.3s ease-in-out;
   }
 
   .nav-menu.active {
@@ -288,11 +271,5 @@
   .cart-item {
     align-items: flex-start;
     text-align: left;
-  }
-
-  .navbar-left,
-  .navbar-right {
-    width: 100%;
-    justify-content: space-between;
   }
 }

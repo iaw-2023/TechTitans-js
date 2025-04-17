@@ -16,6 +16,7 @@ const Navbar = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [turnoToDelete, setTurnoToDelete] = useState(null)
 
+  // Memoizar funciones de manejo para evitar recreaciones
   const handleLogin = useCallback(() => {
     loginWithRedirect()
   }, [loginWithRedirect])
@@ -38,12 +39,14 @@ const Navbar = () => {
         setIsCartOpen(false)
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
 
+  // Memoizar el cálculo del total para evitar recálculos innecesarios
   const calculateTotal = useCallback(() => {
     return carrito.reduce((total, item) => total + Number.parseFloat(item.cancha.precio), 0).toFixed(2)
   }, [carrito])
@@ -61,6 +64,7 @@ const Navbar = () => {
     setTurnoToDelete(null)
   }, [turnoToDelete, eliminarElemento])
 
+  // Funciones de formato memoizadas
   const formatDate = useCallback((dateString) => {
     const date = new Date(dateString)
     date.setDate(date.getDate() + 1)
@@ -71,36 +75,35 @@ const Navbar = () => {
     return timeString.slice(0, 5)
   }, [])
 
+  // Memoizar el contador del carrito
   const cartItemCount = carrito.length
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo izquierda */}
-        <div className="navbar-left">
-          <Link to="/" className="navbar-logo">
-            <img src={logo || "/placeholder.svg"} alt="Logo" />
-          </Link>
+      <Link to="/" className="navbar-logo">
+        <img src={logo || "/placeholder.svg"} alt="Logo" />
+      </Link>
+        <div className="menu-icon" onClick={toggleMenu}>
+          <span>{isOpen ? "✕" : "☰"}</span>
         </div>
-
-        {/* Menú centro */}
-        <div className="navbar-center">
-          <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
-            <li id="reservar" className="nav-item">
-              <Link className="nav-link" to="/" onClick={toggleMenu}>Reservar</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/misReservas" onClick={toggleMenu}>Mis Reservas</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/contacto" onClick={toggleMenu}>Contacto</Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Login + Carrito derecha */}
-        <div className="navbar-right">
-          <div className="carrito-icon" ref={cartRef}>
+        <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
+          <li id="reservar" className="nav-item">
+            <Link className="nav-link" to="/" onClick={toggleMenu}>
+              Reservar
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/misReservas" onClick={toggleMenu}>
+              Mis Reservas
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/contacto" onClick={toggleMenu}>
+              Contacto
+            </Link>
+          </li>
+          <li className="carrito-icon" ref={cartRef}>
             <div className="nav-link carrito-link" onClick={toggleCart}>
               <ShoppingCart size={24} />
               {cartItemCount > 0 && <span className="carrito-counter">{cartItemCount}</span>}
@@ -115,39 +118,67 @@ const Navbar = () => {
                     {carrito.map((item, index) => (
                       <div key={index} className="cart-item">
                         <div className="cart-item-info">
-                          <p><strong>Día:</strong> {formatDate(item.fecha_turno)}</p>
-                          <p><strong>Hora:</strong> {formatTime(item.hora_turno)}</p>
-                          <p><strong>Cancha:</strong> {item.cancha.nombre}</p>
-                          <p><strong>Categoría:</strong> {item.cancha.categoria_nombre}</p>
-                          <p><strong>Precio:</strong> ${item.cancha.precio}</p>
+                          <p>
+                            <strong>Día:</strong> {formatDate(item.fecha_turno)}
+                          </p>
+                          <p>
+                            <strong>Hora:</strong> {formatTime(item.hora_turno)}
+                          </p>
+                          <p>
+                            <strong>Cancha:</strong> {item.cancha.nombre}
+                          </p>
+                          <p>
+                            <strong>Categoría:</strong> {item.cancha.categoria_nombre}
+                          </p>
+                          <p>
+                            <strong>Precio:</strong> ${item.cancha.precio}
+                          </p>
                         </div>
                         <button className="delete-btn" onClick={() => handleDeleteTurno(item)}>
                           <Trash size={20} />
                         </button>
                       </div>
                     ))}
-                    <div className="cart-total"><strong>Total: ${calculateTotal()}</strong></div>
-                    <Link to="/carrito" className="ver-carrito-btn" onClick={() => setIsCartOpen(false)}>Ver carrito</Link>
+                    <div className="cart-total">
+                      <strong>Total: ${calculateTotal()}</strong>
+                    </div>
+                    <Link to="/carrito" className="ver-carrito-btn" onClick={() => setIsCartOpen(false)}>
+                      Ver carrito
+                    </Link>
                   </>
                 )}
               </div>
             )}
-          </div>
-
-          {isAuthenticated ? (
-            <>
-              <button className="nav-link" onClick={() => { handleLogout(); toggleMenu(); }}>Cerrar sesión</button>
-              {user && <span className="nav-link">{user.name}</span>}
-            </>
-          ) : (
-            <button className="nav-link" onClick={() => { handleLogin(); toggleMenu(); }}>Iniciar sesión</button>
+          </li>
+          <li className="nav-item">
+            {isAuthenticated ? (
+              <button
+                className="nav-link"
+                onClick={() => {
+                  handleLogout()
+                  toggleMenu()
+                }}
+              >
+                Cerrar sesión
+              </button>
+            ) : (
+              <button
+                className="nav-link"
+                onClick={() => {
+                  handleLogin()
+                  toggleMenu()
+                }}
+              >
+                Iniciar sesión
+              </button>
+            )}
+          </li>
+          {isAuthenticated && user && (
+            <li className="nav-item">
+              <span className="nav-link">{user.name}</span>
+            </li>
           )}
-        </div>
-
-        {/* Menú mobile */}
-        <div className="menu-icon" onClick={toggleMenu}>
-          <span>{isOpen ? "✕" : "☰"}</span>
-        </div>
+        </ul>
       </div>
 
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
@@ -158,12 +189,17 @@ const Navbar = () => {
           <p>¿Está seguro de que desea eliminar este turno del carrito?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Cancelar</Button>
-          <Button variant="danger" onClick={confirmDeleteTurno}>Confirmar</Button>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDeleteTurno}>
+            Confirmar
+          </Button>
         </Modal.Footer>
       </Modal>
     </nav>
   )
 }
 
+// Memoizar el componente completo para evitar renderizados innecesarios
 export default memo(Navbar)
