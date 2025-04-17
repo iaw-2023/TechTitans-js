@@ -76,17 +76,22 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo izquierda */}
+        {/* Logo a la izquierda */}
         <div className="navbar-left">
           <Link to="/" className="navbar-logo">
             <img src={logo || "/placeholder.svg"} alt="Logo" />
           </Link>
         </div>
-
-        {/* Menú centro */}
-        <div className="navbar-center">
-          <ul className={isOpen ? "nav-menu active" : "nav-menu"}>
-            <li id="reservar" className="nav-item">
+  
+        {/* Botón hamburguesa (solo mobile) */}
+        <div className="menu-icon" onClick={toggleMenu}>
+          <span>{isOpen ? "✕" : "☰"}</span>
+        </div>
+  
+        {/* Menú desplegable responsive */}
+        <div className={isOpen ? "nav-menu active" : "nav-menu"}>
+          <ul className="nav-items">
+            <li className="nav-item">
               <Link className="nav-link" to="/" onClick={toggleMenu}>Reservar</Link>
             </li>
             <li className="nav-item">
@@ -95,61 +100,72 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/contacto" onClick={toggleMenu}>Contacto</Link>
             </li>
+            <li className="nav-item">
+              <div className="nav-link carrito-link" onClick={toggleCart}>
+                <ShoppingCart size={24} />
+                {cartItemCount > 0 && <span className="carrito-counter">{cartItemCount}</span>}
+              </div>
+              {isCartOpen && (
+                <div className="cart-dropdown">
+                  <h3>Carrito de Compras</h3>
+                  {cartItemCount === 0 ? (
+                    <p>No hay turnos en el carrito</p>
+                  ) : (
+                    <>
+                      {carrito.map((item, index) => (
+                        <div key={index} className="cart-item">
+                          <div className="cart-item-info">
+                            <p><strong>Día:</strong> {formatDate(item.fecha_turno)}</p>
+                            <p><strong>Hora:</strong> {formatTime(item.hora_turno)}</p>
+                            <p><strong>Cancha:</strong> {item.cancha.nombre}</p>
+                            <p><strong>Categoría:</strong> {item.cancha.categoria_nombre}</p>
+                            <p><strong>Precio:</strong> ${item.cancha.precio}</p>
+                          </div>
+                          <button className="delete-btn" onClick={() => handleDeleteTurno(item)}>
+                            <Trash size={20} />
+                          </button>
+                        </div>
+                      ))}
+                      <div className="cart-total"><strong>Total: ${calculateTotal()}</strong></div>
+                      <Link to="/carrito" className="ver-carrito-btn" onClick={() => setIsCartOpen(false)}>Ver carrito</Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </li>
+            <li className="nav-item">
+              {isAuthenticated ? (
+                <>
+                  <button className="nav-link" onClick={() => { handleLogout(); toggleMenu(); }}>Cerrar sesión</button>
+                  {user && <span className="nav-link">{user.name}</span>}
+                </>
+              ) : (
+                <button className="nav-link" onClick={() => { handleLogin(); toggleMenu(); }}>Iniciar sesión</button>
+              )}
+            </li>
           </ul>
         </div>
-
-        {/* Login + Carrito derecha */}
-        <div className="navbar-right">
+  
+        {/* Elementos a la derecha en desktop */}
+        <div className="navbar-right desktop-only">
           <div className="carrito-icon" ref={cartRef}>
             <div className="nav-link carrito-link" onClick={toggleCart}>
               <ShoppingCart size={24} />
               {cartItemCount > 0 && <span className="carrito-counter">{cartItemCount}</span>}
             </div>
-            {isCartOpen && (
-              <div className="cart-dropdown">
-                <h3>Carrito de Compras</h3>
-                {cartItemCount === 0 ? (
-                  <p>No hay turnos en el carrito</p>
-                ) : (
-                  <>
-                    {carrito.map((item, index) => (
-                      <div key={index} className="cart-item">
-                        <div className="cart-item-info">
-                          <p><strong>Día:</strong> {formatDate(item.fecha_turno)}</p>
-                          <p><strong>Hora:</strong> {formatTime(item.hora_turno)}</p>
-                          <p><strong>Cancha:</strong> {item.cancha.nombre}</p>
-                          <p><strong>Categoría:</strong> {item.cancha.categoria_nombre}</p>
-                          <p><strong>Precio:</strong> ${item.cancha.precio}</p>
-                        </div>
-                        <button className="delete-btn" onClick={() => handleDeleteTurno(item)}>
-                          <Trash size={20} />
-                        </button>
-                      </div>
-                    ))}
-                    <div className="cart-total"><strong>Total: ${calculateTotal()}</strong></div>
-                    <Link to="/carrito" className="ver-carrito-btn" onClick={() => setIsCartOpen(false)}>Ver carrito</Link>
-                  </>
-                )}
-              </div>
-            )}
           </div>
-
           {isAuthenticated ? (
             <>
-              <button className="nav-link" onClick={() => { handleLogout(); toggleMenu(); }}>Cerrar sesión</button>
+              <button className="nav-link" onClick={() => handleLogout()}>Cerrar sesión</button>
               {user && <span className="nav-link">{user.name}</span>}
             </>
           ) : (
-            <button className="nav-link" onClick={() => { handleLogin(); toggleMenu(); }}>Iniciar sesión</button>
+            <button className="nav-link" onClick={() => handleLogin()}>Iniciar sesión</button>
           )}
         </div>
-
-        {/* Menú mobile */}
-        <div className="menu-icon" onClick={toggleMenu}>
-          <span>{isOpen ? "✕" : "☰"}</span>
-        </div>
       </div>
-
+  
+      {/* Modal de confirmación */}
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Eliminar turno?</Modal.Title>
@@ -164,6 +180,7 @@ const Navbar = () => {
       </Modal>
     </nav>
   )
+  
 }
 
 export default memo(Navbar)
