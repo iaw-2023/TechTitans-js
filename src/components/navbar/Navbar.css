@@ -17,8 +17,17 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 1200px;
 }
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 
 .navbar-logo img {
   height: 50px;
