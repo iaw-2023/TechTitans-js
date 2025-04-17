@@ -69,21 +69,23 @@ const Chatbot = () => {
   
       {isOpen && (
         <div className="mt-2 bg-white rounded-xl shadow-lg w-80 max-w-[90vw] h-[400px] flex flex-col overflow-hidden animate-fade-in">
+          {/* Zona de mensajes */}
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`px-4 py-2 rounded-lg text-sm max-w-[75%] break-words ${
-                  msg.sender === "user"
-                    ? "bg-green-100 self-end"
-                    : "bg-gray-200 self-start"
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm max-w-[75%] break-words
+                  ${msg.sender === "user"
+                    ? "bg-green-100 ml-auto text-right"
+                    : "bg-gray-200 mr-auto text-left"
+                  }`}
               >
                 {msg.text}
               </div>
             ))}
           </div>
   
+          {/* Zona de input */}
           <div className="flex items-center border-t p-2 gap-2">
             <input
               type="text"
@@ -91,6 +93,9 @@ const Chatbot = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribí tu mensaje..."
               className="flex-1 px-4 py-2 text-sm border rounded-full focus:outline-none"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSendMessage()
+              }}
             />
             <button
               onClick={handleSendMessage}
@@ -103,7 +108,7 @@ const Chatbot = () => {
         </div>
       )}
     </div>
-  )
+  )  
   
 }
 
