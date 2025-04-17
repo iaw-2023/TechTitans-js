@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="/public/logo/favicon.ico" />
-    <link rel="icon" type="image/png" href="/public/logo/favicon96.png" sizes="96x96" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/public/logo/apple-touch-icon.png" />
+    <!-- Fix the favicon paths by removing "/public" -->
+    <link rel="shortcut icon" href="/logo/favicon.ico" />
+    <link rel="icon" type="image/png" href="/logo/favicon96.png" sizes="96x96" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Reservar Cancha" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -12,8 +13,8 @@
       name="description"
       content="Aplicación web para la reserva de canchas"
     />
-    <!-- Manifesto para la PWA -->
-    <link rel="manifest" href="manifest.json" />
+    <!-- Fix the manifest path -->
+    <link rel="manifest" href="/manifest.json" />
 
     <title>Reserva tu cancha</title>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
