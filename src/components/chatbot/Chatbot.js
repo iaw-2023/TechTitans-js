@@ -55,18 +55,18 @@ const Chatbot = () => {
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-full">
       {showHelpBubble && !isOpen && (
-        <div className="mb-2 max-w-xs px-4 py-2 rounded-full bg-blue-600 text-white text-sm shadow animate-fade-in">
+        <div className="mb-2 inline-block px-3 py-1 rounded-full bg-blue-600 text-white text-xs shadow animate-fade-in">
           ¿Necesitás ayuda?
         </div>
       )}
-
-      <div
-        className="bg-blue-600 text-white px-4 py-2 rounded-full text-lg shadow cursor-pointer"
+  
+      <button
+        className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white text-2xl rounded-full shadow hover:bg-blue-700 transition"
         onClick={toggleChat}
       >
         {isOpen ? "✖️" : "🤖"}
-      </div>
-
+      </button>
+  
       {isOpen && (
         <div className="mt-2 bg-white rounded-xl shadow-lg w-80 max-w-[90vw] h-[400px] flex flex-col overflow-hidden animate-fade-in">
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
@@ -83,7 +83,7 @@ const Chatbot = () => {
               </div>
             ))}
           </div>
-
+  
           <div className="flex items-center border-t p-2 gap-2">
             <input
               type="text"
@@ -104,6 +104,7 @@ const Chatbot = () => {
       )}
     </div>
   )
+  
 }
 
 export default Chatbot
