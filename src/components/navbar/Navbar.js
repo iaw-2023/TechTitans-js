@@ -98,11 +98,6 @@ const Navbar = () => {
               Mis Reservas
             </Link>
           </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/contacto" onClick={toggleMenu}>
-              Contacto
-            </Link>
-          </li>
           <li className="carrito-icon" ref={cartRef}>
             <div className="nav-link carrito-link" onClick={toggleCart}>
               <ShoppingCart size={24} />
