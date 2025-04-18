@@ -9,7 +9,6 @@ import Chatbot from "./chatbot/Chatbot.js"
 import { CarritoProvider } from "../context/ShoppingCartContext"
 import { useAuth0 } from "@auth0/auth0-react"
 import "bootstrap/dist/css/bootstrap.min.css"
-import InstallPWA from "./InstallPWA.js"
 import "../tailwind.css"
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
             </Routes>
           </main>
           <Footer />
-          <InstallPWA />
           <Chatbot />
         </div>
       </Router>
