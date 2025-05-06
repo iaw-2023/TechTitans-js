@@ -34,9 +34,8 @@ const CarritoReservas = () => {
         showConfirmButton: true,
       })
       return
-    } else {
-      setMostrarModal(true)
     }
+    setMostrarModal(true)
   }
 
   const handleLogin = (e) => {
@@ -60,73 +59,77 @@ const CarritoReservas = () => {
     setMostrarConfirmacionEliminar(false)
   }
 
-  const formatearFecha = (fechaStr) => {
-    const fecha = new Date(fechaStr)
-    fecha.setDate(fecha.getDate() + 1)
-    const dia = String(fecha.getDate()).padStart(2, "0")
-    const mes = String(fecha.getMonth() + 1).padStart(2, "0")
-    const anio = fecha.getFullYear()
-    return `${dia}/${mes}/${anio}`
-  }
+  const comprarCarrito = async () => {
+    try {
+      setComprando(true)
 
-  const openModal = (turno) => {
-    setSelectedTurno(turno)
-  }
+      const detalles = carrito.map((item) => ({
+        id_turno: item.id,
+        precio: item.cancha.precio,
+      }))
 
-  const confirmarVaciarCarrito = () => {
-    vaciarCarrito()
-    setMostrarConfirmacion(false)
+      const body = JSON.stringify({
+        email_cliente: email || emailUsuario,
+        turnos: detalles,
+        precio_total: Number.parseInt(obtenerPrecio()),
+      })
+
+      const response = await fetch(`${API}reservas/alta`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body,
+      })
+
+      if (!response.ok) {
+        throw new Error("Error al realizar la compra")
+      }
+
+      const { preference_id } = await response.json()
+
+      document.getElementById("wallet_spinner").style.display = "block"
+      mp.bricks()
+        .create("wallet", "wallet_container", {
+          initialization: { preferenceId: preference_id },
+        })
+        .then(() => {
+          document.getElementById("wallet_spinner").style.display = "none"
+        })
+        .catch((error) => {
+          document.getElementById("wallet_spinner").style.display = "none"
+          console.error("Error al inicializar el Brick:", error)
+        })
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Reserva realizada correctamente!",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+
+      vaciarCarrito()
+    } catch (error) {
+      console.error("Error al realizar la compra:", error)
+      Swal.fire({
+        icon: "error",
+        title: "Error al realizar la compra",
+        text: error.message,
+      })
+    } finally {
+      setComprando(false)
+    }
   }
 
   useEffect(() => {
     obtenerTurnos()
   }, [obtenerTurnos])
 
-  useEffect(() => {
-    const renderBrick = async () => {
-      if (mostrarModal && isAuthenticated) {
-        const container = document.getElementById("wallet_container")
-        if (container) {
-          try {
-            const detalles = carrito.map(item => ({
-              id_turno: item.id,
-              precio: item.cancha.precio,
-            }))
-
-            const body = JSON.stringify({
-              email_cliente: email || emailUsuario,
-              turnos: detalles,
-              precio_total: Number.parseInt(obtenerPrecio()),
-            })
-
-            const response = await fetch(`${API}reservas/alta`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body,
-            })
-
-            if (!response.ok) throw new Error("Error al crear preferencia")
-
-            const { preference_id } = await response.json()
-
-            document.getElementById("wallet_spinner").style.display = "block";
-            const bricksBuilder = mp.bricks().create("wallet", "wallet_container", {
-              initialization: { preferenceId: preference_id }
-            })
-            .then(() => {
-              console.log("Brick inicializado correctamente");
-              document.getElementById("wallet_spinner").style.display = "none";
-            })
-            .catch((error) => {
-              console.error("Error al inicializar el Brick:", error);
-              document.getElementById("wallet_spinner").style.display = "none";
-            })
-        }
-      }
-    }
-
-    setTimeout(renderBrick, 300)
-  }, [mostrarModal])
+  const formatearFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr)
+    fecha.setDate(fecha.getDate() + 1)
+    return fecha.toLocaleDateString("es-AR")
+  }
 
   const renderTabla = () => {
     if (loading) {
@@ -164,15 +167,15 @@ const CarritoReservas = () => {
                 <td>${turno.cancha.precio}</td>
                 <td>
                   <div className="action-buttons">
-                    <Button variant="info" size="sm" onClick={() => openModal(turno)}>
+                    <Button variant="info" size="sm" onClick={() => setSelectedTurno(turno)}>
                       Ver detalle
                     </Button>
                     <Button
                       variant="danger"
                       size="sm"
                       onClick={() => {
-                        setMostrarConfirmacionEliminar(true)
                         setTurnoAEliminar(turno.id)
+                        setMostrarConfirmacionEliminar(true)
                       }}
                     >
                       Borrar turno
@@ -190,7 +193,6 @@ const CarritoReservas = () => {
   return (
     <div className="carrito-reservas-container">
       <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Carrito de reservas</h2>
-
       <Card.Body>
         {renderTabla()}
         {turnosCarrito.length > 0 && (
@@ -204,61 +206,60 @@ const CarritoReservas = () => {
         )}
       </Card.Body>
 
+      {/* Modal de compra */}
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>Gestionar reserva</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {isAuthenticated ? (
-          <div>
-            <p>
-              Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
-            </p>
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={comprarCarrito}
-              disabled={comprando}
-            >
-              {comprando ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    className="me-2"
-                  />
-                  Procesando...
-                </>
-              ) : (
-                "Comprar"
-              )}
-            </button>
-            <div className="text-center my-3" id="wallet_spinner" style={{ display: "none" }}>
-              <Spinner animation="border" role="status" />
-              <div>Cargando botón de pago...</div>
+        <Modal.Header closeButton>
+          <Modal.Title>Gestionar reserva</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isAuthenticated ? (
+            <div>
+              <p>Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma.</p>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={comprarCarrito}
+                disabled={comprando}
+              >
+                {comprando ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Procesando...
+                  </>
+                ) : (
+                  "Comprar"
+                )}
+              </button>
+              <div id="wallet_spinner" className="text-center my-3" style={{ display: "none" }}>
+                <Spinner animation="border" role="status" />
+                <div>Cargando botón de pago...</div>
+              </div>
+              <div id="wallet_container" style={{ marginTop: "20px" }}></div>
             </div>
-            <div id="wallet_container" style={{ marginTop: "20px" }}></div>
-          </div>
-        ) : (
-          <div>
-            <p>Debe iniciar sesión para realizar una reserva.</p>
-            <button type="button" className="btn btn-info" onClick={handleLogin}>
-              Iniciar sesión
-            </button>
-          </div>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-          Cerrar
-        </Button>
-      </Modal.Footer>
-    </Modal>
+          ) : (
+            <div>
+              <p>Debe iniciar sesión para realizar una reserva.</p>
+              <button type="button" className="btn btn-info" onClick={handleLogin}>
+                Iniciar sesión
+              </button>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
-
+      {/* Confirmar vaciar */}
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Vaciar carrito?</Modal.Title>
@@ -270,12 +271,13 @@ const CarritoReservas = () => {
           <Button variant="secondary" onClick={() => setMostrarConfirmacion(false)}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={confirmarVaciarCarrito}>
+          <Button variant="danger" onClick={() => { vaciarCarrito(); setMostrarConfirmacion(false) }}>
             Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
 
+      {/* Confirmar eliminar turno */}
       <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Eliminar turno?</Modal.Title>
@@ -293,6 +295,7 @@ const CarritoReservas = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Ver detalle turno */}
       <Modal show={selectedTurno !== null} onHide={() => setSelectedTurno(null)}>
         <Modal.Header closeButton>
           <Modal.Title>Detalles del Turno</Modal.Title>
@@ -301,14 +304,7 @@ const CarritoReservas = () => {
           {selectedTurno && (
             <div>
               <p>{selectedTurno.cancha.nombre}</p>
-              <p>
-                Fecha: {(() => {
-                  const fecha = new Date(selectedTurno.fecha_turno)
-                  fecha.setDate(fecha.getDate() + 1)
-                  const opcionesFecha = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
-                  return fecha.toLocaleDateString("es-AR", opcionesFecha)
-                })()}
-              </p>
+              <p>Fecha: {formatearFecha(selectedTurno.fecha_turno)}</p>
               <p>Hora: {selectedTurno.hora_turno}</p>
               <p>Precio: ${selectedTurno.cancha.precio}</p>
               <p>Superficie: {selectedTurno.cancha.superficie}</p>
