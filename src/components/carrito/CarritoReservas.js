@@ -24,7 +24,7 @@ const CarritoReservas = () => {
   const emailUsuario = isAuthenticated ? user.email : ""
   const [email, setEmail] = useState(emailUsuario)
   const [selectedTurno, setSelectedTurno] = useState(null)
-  const [comprando, setComprando] = useState(false)
+  const [cargandoWallet, setCargandoWallet] = useState(false)
 
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
@@ -36,32 +36,12 @@ const CarritoReservas = () => {
       return
     }
     setMostrarModal(true)
+    iniciarCompra()
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    loginWithRedirect()
-  }
-
-  const obtenerTurnos = useCallback(() => {
-    setLoading(true)
-    setTurnosCarrito(carrito)
-    setLoading(false)
-  }, [carrito])
-
-  const obtenerPrecio = () => {
-    return turnosCarrito.reduce((total, turno) => total + Number.parseInt(turno.cancha.precio), 0).toFixed(2)
-  }
-
-  const confirmarEliminarElemento = (id) => {
-    eliminarElemento(id)
-    setTurnoAEliminar(null)
-    setMostrarConfirmacionEliminar(false)
-  }
-
-  const comprarCarrito = async () => {
+  const iniciarCompra = async () => {
     try {
-      setComprando(true)
+      setCargandoWallet(true)
 
       const detalles = carrito.map((item) => ({
         id_turno: item.id,
@@ -83,42 +63,42 @@ const CarritoReservas = () => {
       })
 
       if (!response.ok) {
-        throw new Error("Error al realizar la compra")
+        throw new Error("Error al generar la preferencia de pago")
       }
 
       const { preference_id } = await response.json()
 
-      document.getElementById("wallet_spinner").style.display = "block"
-      mp.bricks()
+      await mp.bricks()
         .create("wallet", "wallet_container", {
           initialization: { preferenceId: preference_id },
         })
-        .then(() => {
-          document.getElementById("wallet_spinner").style.display = "none"
-        })
-        .catch((error) => {
-          document.getElementById("wallet_spinner").style.display = "none"
-          console.error("Error al inicializar el Brick:", error)
-        })
 
-      Swal.fire({
-        icon: "success",
-        title: "¡Reserva realizada correctamente!",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-
-      vaciarCarrito()
+      setCargandoWallet(false)
     } catch (error) {
-      console.error("Error al realizar la compra:", error)
+      console.error("Error al generar botón de pago:", error)
+      setCargandoWallet(false)
       Swal.fire({
         icon: "error",
-        title: "Error al realizar la compra",
+        title: "Error al generar el botón de pago",
         text: error.message,
       })
-    } finally {
-      setComprando(false)
     }
+  }
+
+  const obtenerTurnos = useCallback(() => {
+    setLoading(true)
+    setTurnosCarrito(carrito)
+    setLoading(false)
+  }, [carrito])
+
+  const obtenerPrecio = () => {
+    return turnosCarrito.reduce((total, turno) => total + Number.parseInt(turno.cancha.precio), 0).toFixed(2)
+  }
+
+  const confirmarEliminarElemento = (id) => {
+    eliminarElemento(id)
+    setTurnoAEliminar(null)
+    setMostrarConfirmacionEliminar(false)
   }
 
   useEffect(() => {
@@ -206,42 +186,21 @@ const CarritoReservas = () => {
         )}
       </Card.Body>
 
-      {/* Modal de compra */}
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Gestionar reserva</Modal.Title>
+          <Modal.Title>Finalizar Reserva</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isAuthenticated ? (
-            <div>
-              <p>Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma.</p>
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={comprarCarrito}
-                disabled={comprando}
-              >
-                {comprando ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                      className="me-2"
-                    />
-                    Procesando...
-                  </>
-                ) : (
-                  "Comprar"
-                )}
-              </button>
-              <div id="wallet_spinner" className="text-center my-3" style={{ display: "none" }}>
-                <Spinner animation="border" role="status" />
-                <div>Cargando botón de pago...</div>
-              </div>
-              <div id="wallet_container" style={{ marginTop: "20px" }}></div>
+            <div className="text-center">
+              <p>Espere unos segundos mientras se carga el botón de pago.</p>
+              {cargandoWallet && (
+                <div className="my-3">
+                  <Spinner animation="border" role="status" />
+                  <div className="mt-2">Cargando botón de Mercado Pago...</div>
+                </div>
+              )}
+              <div id="wallet_container" className="mt-3"></div>
             </div>
           ) : (
             <div>
@@ -259,14 +218,11 @@ const CarritoReservas = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Confirmar vaciar */}
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Vaciar carrito?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p>¿Está seguro de que desea vaciar el carrito?</p>
-        </Modal.Body>
+        <Modal.Body>¿Está seguro de que desea vaciar el carrito?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarConfirmacion(false)}>
             Cancelar
@@ -277,14 +233,11 @@ const CarritoReservas = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Confirmar eliminar turno */}
       <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Eliminar turno?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p>¿Está seguro de que desea eliminar este turno del carrito?</p>
-        </Modal.Body>
+        <Modal.Body>¿Está seguro de que desea eliminar este turno del carrito?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarConfirmacionEliminar(false)}>
             Cancelar
@@ -295,14 +248,13 @@ const CarritoReservas = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Ver detalle turno */}
       <Modal show={selectedTurno !== null} onHide={() => setSelectedTurno(null)}>
         <Modal.Header closeButton>
           <Modal.Title>Detalles del Turno</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedTurno && (
-            <div>
+            <>
               <p>{selectedTurno.cancha.nombre}</p>
               <p>Fecha: {formatearFecha(selectedTurno.fecha_turno)}</p>
               <p>Hora: {selectedTurno.hora_turno}</p>
@@ -310,7 +262,7 @@ const CarritoReservas = () => {
               <p>Superficie: {selectedTurno.cancha.superficie}</p>
               <p>Techada: {selectedTurno.cancha.techo ? "Sí" : "No"}</p>
               <p>Cantidad de jugadores: {selectedTurno.cancha.cant_jugadores}</p>
-            </div>
+            </>
           )}
         </Modal.Body>
         <Modal.Footer>
