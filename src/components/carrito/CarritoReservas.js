@@ -134,6 +134,11 @@ const CarritoReservas = () => {
     obtenerTurnos()
   }, [obtenerTurnos])
 
+  const formatearFecha = (fechaStr) => {
+    const [year, month, day] = fechaStr.split("-")
+    return `${day}/${month}/${year}`
+  }
+
   const renderTabla = () => {
     if (loading) {
       return (
@@ -164,7 +169,7 @@ const CarritoReservas = () => {
           <tbody>
             {turnosCarrito.map((turno) => (
               <tr key={turno.id}>
-                <td>{new Date(turno.fecha_turno).toLocaleDateString("es-AR")}</td>
+                <td>{formatearFecha(turno.fecha_turno)}</td>
                 <td>{turno.hora_turno}</td>
                 <td>{turno.cancha.categoria_nombre}</td>
                 <td>${turno.cancha.precio}</td>
