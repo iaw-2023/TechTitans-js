@@ -5,6 +5,7 @@ import './Reservas.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import ReservaModal from './ReservaModal';
 import ConfirmCancelModal from './ConfirmCancelModal'; // Importa el nuevo modal
+import { Table, Button, Badge, Spinner } from "react-bootstrap"
 
 const Reservas = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
@@ -113,6 +114,10 @@ const Reservas = () => {
     setShowModal(true);
   };
   
+  const calcularPrecioTotal = (detalle) => {
+    return detalle.reduce((total, item) => total + Number.parseFloat(item.precio), 0)
+  }
+
   return (
     <div className="card-container">
       <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Mis Reservas</h2>
@@ -123,48 +128,51 @@ const Reservas = () => {
       )}
       {loading ? (
         <div className="d-flex justify-content-center my-5">
-          <div className="spinner-border text-primary" role="status">
+          <Spinner animation="border" role="status">
             <span className="visually-hidden">Cargando...</span>
-          </div>
+          </Spinner>
         </div>
       ) : reservas.length === 0 ? (
         <div className="alert alert-primary" role="alert">
           No tienes reservas registradas.
         </div>
       ) : (
-        <div className="row">
-          {reservas.map((reserva) => (
-            <div className="col-md-4 mb-4" key={reserva.reserva.id}>
-              <div className="card border-primary mb-3 text-bg-dark mb-3">
-                <div className="card-body">
-                  <h3 className="card-title">Orden de Reserva # {reserva.reserva.id}</h3>
-                  <p className="card-text">
-                    Fecha: {reserva.reserva.fecha_reserva}
-                  </p>
-                  <p className="card-text">
-                    Precio Total: ${reserva.detalle.reduce((total, item) => total + parseFloat(item.precio), 0)}
-                  </p>
-                  <p className="card-text">
-                    Estado:{' '}
-                    <span className={getBadgeClass(reserva.reserva.estado)}>
-                      {reserva.reserva.estado}
-                    </span>
-                  </p>
-                  <button className="btn btn-info" onClick={() => handleShowModal(reserva)}>
-                    Detalles
-                  </button>
-                  {reserva.reserva.estado !== 'Cancelado' && (
-                    <button
-                      className="btn btn-danger ms-2"
-                      onClick={() => confirmarCancelacion(reserva.reserva)}
-                    >
-                      Cancelar Reserva
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="table-responsive">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Orden de Reserva</th>
+                <th>Fecha</th>
+                <th>Precio Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reservas.map((reserva) => (
+                <tr key={reserva.reserva.id}>
+                  <td>#{reserva.reserva.id}</td>
+                  <td>{reserva.reserva.fecha_reserva}</td>
+                  <td>${calcularPrecioTotal(reserva.detalle)}</td>
+                  <td>
+                    <Badge className={getBadgeClass(reserva.reserva.estado)}>{reserva.reserva.estado}</Badge>
+                  </td>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Button variant="info" size="sm" onClick={() => handleShowModal(reserva)}>
+                        Detalles
+                      </Button>
+                      {reserva.reserva.estado !== "Cancelado" && (
+                        <Button variant="danger" size="sm" onClick={() => confirmarCancelacion(reserva.reserva)}>
+                          Cancelar Reserva
+                        </Button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </div>
       )}
       {modalData && (
