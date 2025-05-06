@@ -135,7 +135,9 @@ const CarritoReservas = () => {
   }, [obtenerTurnos])
 
   const formatearFecha = (fechaStr) => {
-    const [year, month, day] = fechaStr.split("-")
+    const fecha = new Date(selectedTurno.fechaStr)
+    fecha.setDate(fecha.getDate() + 1)
+    const [year, month, day] = fecha.split("-")
     return `${day}/${month}/${year}`
   }
 
