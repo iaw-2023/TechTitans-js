@@ -109,12 +109,18 @@ const CarritoReservas = () => {
 
             const { preference_id } = await response.json()
 
-            await mp.bricks().create("wallet", "wallet_container", {
-              initialization: { preferenceId: preference_id },
+            document.getElementById("wallet_spinner").style.display = "block";
+            const bricksBuilder = mp.bricks().create("wallet", "wallet_container", {
+              initialization: { preferenceId: preference_id }
             })
-          } catch (err) {
-            console.error("Error al crear el Brick:", err)
-          }
+            .then(() => {
+              console.log("Brick inicializado correctamente");
+              document.getElementById("wallet_spinner").style.display = "none";
+            })
+            .catch((error) => {
+              console.error("Error al inicializar el Brick:", error);
+              document.getElementById("wallet_spinner").style.display = "none";
+            })
         }
       }
     }
@@ -199,32 +205,59 @@ const CarritoReservas = () => {
       </Card.Body>
 
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Gestionar reserva</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {isAuthenticated ? (
-            <div>
-              <p>
-                Presione pagar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
-              </p>
-              <div id="wallet_container" style={{ marginTop: "20px" }}></div>
+      <Modal.Header closeButton>
+        <Modal.Title>Gestionar reserva</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {isAuthenticated ? (
+          <div>
+            <p>
+              Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
+            </p>
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={comprarCarrito}
+              disabled={comprando}
+            >
+              {comprando ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Procesando...
+                </>
+              ) : (
+                "Comprar"
+              )}
+            </button>
+            <div className="text-center my-3" id="wallet_spinner" style={{ display: "none" }}>
+              <Spinner animation="border" role="status" />
+              <div>Cargando botón de pago...</div>
             </div>
-          ) : (
-            <div>
-              <p>Debe iniciar sesión para realizar una reserva.</p>
-              <button type="button" className="btn btn-info" onClick={handleLogin}>
-                Iniciar sesión
-              </button>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <div id="wallet_container" style={{ marginTop: "20px" }}></div>
+          </div>
+        ) : (
+          <div>
+            <p>Debe iniciar sesión para realizar una reserva.</p>
+            <button type="button" className="btn btn-info" onClick={handleLogin}>
+              Iniciar sesión
+            </button>
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+          Cerrar
+        </Button>
+      </Modal.Footer>
+    </Modal>
+
 
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
