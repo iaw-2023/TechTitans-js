@@ -118,6 +118,15 @@ const Reservas = () => {
     return detalle.reduce((total, item) => total + Number.parseFloat(item.precio), 0)
   }
 
+  const formatearFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr)
+    fecha.setDate(fecha.getDate() + 1)
+    const dia = String(fecha.getDate()).padStart(2, "0")
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0")
+    const anio = fecha.getFullYear()
+    return `${dia}/${mes}/${anio}`
+  }
+
   return (
     <div className="card-container">
       <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Mis Reservas</h2>
@@ -152,7 +161,7 @@ const Reservas = () => {
               {reservas.map((reserva) => (
                 <tr key={reserva.reserva.id}>
                   <td>#{reserva.reserva.id}</td>
-                  <td>{reserva.reserva.fecha_reserva}</td>
+                  <td>{formatearFecha(reserva.reserva.fecha_reserva)}</td>
                   <td>${calcularPrecioTotal(reserva.detalle)}</td>
                   <td>
                     <Badge className={getBadgeClass(reserva.reserva.estado)}>{reserva.reserva.estado}</Badge>

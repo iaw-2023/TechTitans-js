@@ -24,6 +24,7 @@ const CarritoReservas = () => {
   const emailUsuario = isAuthenticated ? user.email : ""
   const [email, setEmail] = useState(emailUsuario)
   const [selectedTurno, setSelectedTurno] = useState(null) // Added state for details modal
+  const [comprando, setComprando] = useState(false)
 
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
@@ -73,6 +74,8 @@ const CarritoReservas = () => {
 
   const comprarCarrito = async () => {
     try {
+      setComprando(true)
+
       const detalles = carrito.map((item) => ({
         id_turno: item.id,
         precio: item.cancha.precio,
@@ -120,6 +123,7 @@ const CarritoReservas = () => {
       })
 
       vaciarCarrito()
+      setMostrarModal(false)
     } catch (error) {
       console.error("Error al realizar la compra:", error)
       Swal.fire({
@@ -127,6 +131,8 @@ const CarritoReservas = () => {
         title: "Error al realizar la compra",
         text: error.message,
       })
+    } finally {
+      setComprando(false)
     }
   }
 
@@ -138,9 +144,9 @@ const CarritoReservas = () => {
     const fecha = new Date(fechaStr)
     fecha.setDate(fecha.getDate() + 1)
     const dia = String(fecha.getDate()).padStart(2, "0")
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0")
-  const anio = fecha.getFullYear()
-  return `${dia}/${mes}/${anio}`
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0")
+    const anio = fecha.getFullYear()
+    return `${dia}/${mes}/${anio}`
   }
 
   const renderTabla = () => {
@@ -213,18 +219,18 @@ const CarritoReservas = () => {
     <div className="carrito-reservas-container">
       <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Carrito de reservas</h2>
 
-        <Card.Body>
-          {renderTabla()}
-          {turnosCarrito.length > 0 && (
-            <div className="mt-4 d-flex flex-column align-items-center">
-              <h4 className="precio-total">Precio Total: ${obtenerPrecio()}</h4>
-              <div className="buttons-container">
-                <BotonVaciar onClick={() => setMostrarConfirmacion(true)} />
-                <BotonComprarCarrito onClick={mostrarModalCliente} />
-              </div>
+      <Card.Body>
+        {renderTabla()}
+        {turnosCarrito.length > 0 && (
+          <div className="mt-4 d-flex flex-column align-items-center">
+            <h4 className="precio-total">Precio Total: ${obtenerPrecio()}</h4>
+            <div className="buttons-container">
+              <BotonVaciar onClick={() => setMostrarConfirmacion(true)} />
+              <BotonComprarCarrito onClick={mostrarModalCliente} />
             </div>
-          )}
-        </Card.Body>
+          </div>
+        )}
+      </Card.Body>
 
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
@@ -237,8 +243,15 @@ const CarritoReservas = () => {
                 Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas
                 gracias!
               </p>
-              <button type="button" className="btn btn-success" onClick={comprarCarrito}>
-                Comprar
+              <button type="button" className="btn btn-success" onClick={comprarCarrito} disabled={comprando}>
+                {comprando ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                    Procesando...
+                  </>
+                ) : (
+                  "Comprar"
+                )}
               </button>
               <div id="wallet_container" style={{ marginTop: "20px" }}></div>
             </div>
@@ -324,4 +337,3 @@ const CarritoReservas = () => {
 }
 
 export default CarritoReservas
-

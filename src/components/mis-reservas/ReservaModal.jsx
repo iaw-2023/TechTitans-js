@@ -10,6 +10,15 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
     }
   };
 
+  const formatearFecha = (fechaStr) => {
+    const fecha = new Date(fechaStr)
+    fecha.setDate(fecha.getDate() + 1)
+    const dia = String(fecha.getDate()).padStart(2, "0")
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0")
+    const anio = fecha.getFullYear()
+    return `${dia}/${mes}/${anio}`
+  }
+
   return (
     <div
       className={`modal ${show ? 'show' : ''}`}
@@ -36,7 +45,7 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
           <div className="modal-body">
             <h6>Información de la Reserva</h6>
             <ul>
-              <li><strong>Fecha de Reserva:</strong> {reserva.fecha_reserva}</li>
+              <li><strong>Fecha de Reserva:</strong> {formatearFecha(reserva.fecha_reserva)}</li>
               <li><strong>Hora de Reserva:</strong> {reserva.hora_reserva}</li>
               <li><strong>Email del Cliente:</strong> {reserva.email_cliente}</li>
               <li><strong>Estado:</strong> {reserva.estado}</li>
@@ -59,7 +68,7 @@ const ReservaModal = ({ reserva, turnos, show, onClose }) => {
               <tbody>
                 {turnos.map(({ turno, cancha }, index) => (
                   <tr key={index}>
-                    <td>{turno.fecha_turno}</td>
+                    <td>{formatearFecha(turno.fecha_turno)}</td>
                     <td>{turno.hora_turno}</td>
                     <td>{cancha.nombre}</td>
                     <td>{cancha.categoria?.nombre || 'Sin categoría'}</td>
