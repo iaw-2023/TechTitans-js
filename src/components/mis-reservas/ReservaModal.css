@@ -1,0 +1,42 @@
+/* Estilos adicionales para mejorar la responsividad */
+@media (max-width: 576px) {
+    .modal-dialog {
+      margin: 0.5rem;
+      max-width: calc(100% - 1rem);
+    }
+  
+    .modal-title {
+      font-size: 1.1rem;
+    }
+  
+    .table th,
+    .table td {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Asegurar que el modal se muestre correctamente en dispositivos pequeños */
+  .modal-open {
+    overflow: hidden;
+  }
+  
+  .modal-scrollable {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  
+  /* Mejorar la visualización de las tarjetas en móviles */
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-text {
+    font-size: 0.9rem;
+  }
+  
