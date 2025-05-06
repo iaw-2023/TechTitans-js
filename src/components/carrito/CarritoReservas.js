@@ -23,7 +23,7 @@ const CarritoReservas = () => {
   const { isAuthenticated, loginWithRedirect, user } = useAuth0()
   const emailUsuario = isAuthenticated ? user.email : ""
   const [email, setEmail] = useState(emailUsuario)
-  const [selectedTurno, setSelectedTurno] = useState(null) // Added state for details modal
+  const [selectedTurno, setSelectedTurno] = useState(null)
   const [comprando, setComprando] = useState(false)
 
   const mostrarModalCliente = () => {
@@ -44,18 +44,6 @@ const CarritoReservas = () => {
     loginWithRedirect()
   }
 
-  const seleccionarCliente = () => {
-    if (email === "") {
-      Swal.fire({
-        icon: "info",
-        title: "Ingrese un email válido.",
-        showConfirmButton: true,
-      })
-      return
-    }
-    setMostrarModal(false)
-  }
-
   const obtenerTurnos = useCallback(() => {
     setLoading(true)
     setTurnosCarrito(carrito)
@@ -72,74 +60,6 @@ const CarritoReservas = () => {
     setMostrarConfirmacionEliminar(false)
   }
 
-  const comprarCarrito = async () => {
-    try {
-      setComprando(true)
-
-      const detalles = carrito.map((item) => ({
-        id_turno: item.id,
-        precio: item.cancha.precio,
-      }))
-
-      const body = JSON.stringify({
-        email_cliente: email || emailUsuario,
-        turnos: detalles,
-        precio_total: Number.parseInt(obtenerPrecio()),
-      })
-
-      console.log(body)
-
-      const response = await fetch(`${API}reservas/alta`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body,
-      })
-
-      if (!response.ok) {
-        throw new Error("Error al realizar la compra")
-      }
-
-      const { preference_id } = await response.json()
-
-      console.log("Preference ID recibido:", preference_id)
-
-      const bricksBuilder = mp
-        .bricks()
-        .create("wallet", "wallet_container", {
-          initialization: {
-            preferenceId: preference_id,
-          },
-        })
-        .then(() => console.log("Brick inicializado correctamente"))
-        .catch((error) => console.error("Error al inicializar el Brick:", error))
-
-      Swal.fire({
-        icon: "success",
-        title: "¡Reserva realizada correctamente!",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-
-      vaciarCarrito()
-      setMostrarModal(false)
-    } catch (error) {
-      console.error("Error al realizar la compra:", error)
-      Swal.fire({
-        icon: "error",
-        title: "Error al realizar la compra",
-        text: error.message,
-      })
-    } finally {
-      setComprando(false)
-    }
-  }
-
-  useEffect(() => {
-    obtenerTurnos()
-  }, [obtenerTurnos])
-
   const formatearFecha = (fechaStr) => {
     const fecha = new Date(fechaStr)
     fecha.setDate(fecha.getDate() + 1)
@@ -148,6 +68,59 @@ const CarritoReservas = () => {
     const anio = fecha.getFullYear()
     return `${dia}/${mes}/${anio}`
   }
+
+  const openModal = (turno) => {
+    setSelectedTurno(turno)
+  }
+
+  const confirmarVaciarCarrito = () => {
+    vaciarCarrito()
+    setMostrarConfirmacion(false)
+  }
+
+  useEffect(() => {
+    obtenerTurnos()
+  }, [obtenerTurnos])
+
+  useEffect(() => {
+    const renderBrick = async () => {
+      if (mostrarModal && isAuthenticated) {
+        const container = document.getElementById("wallet_container")
+        if (container) {
+          try {
+            const detalles = carrito.map(item => ({
+              id_turno: item.id,
+              precio: item.cancha.precio,
+            }))
+
+            const body = JSON.stringify({
+              email_cliente: email || emailUsuario,
+              turnos: detalles,
+              precio_total: Number.parseInt(obtenerPrecio()),
+            })
+
+            const response = await fetch(`${API}reservas/alta`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body,
+            })
+
+            if (!response.ok) throw new Error("Error al crear preferencia")
+
+            const { preference_id } = await response.json()
+
+            await mp.bricks().create("wallet", "wallet_container", {
+              initialization: { preferenceId: preference_id },
+            })
+          } catch (err) {
+            console.error("Error al crear el Brick:", err)
+          }
+        }
+      }
+    }
+
+    setTimeout(renderBrick, 300)
+  }, [mostrarModal])
 
   const renderTabla = () => {
     if (loading) {
@@ -191,7 +164,10 @@ const CarritoReservas = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => setMostrarConfirmacionEliminar(true) || setTurnoAEliminar(turno.id)}
+                      onClick={() => {
+                        setMostrarConfirmacionEliminar(true)
+                        setTurnoAEliminar(turno.id)
+                      }}
                     >
                       Borrar turno
                     </Button>
@@ -203,16 +179,6 @@ const CarritoReservas = () => {
         </Table>
       </div>
     )
-  }
-
-  const confirmarVaciarCarrito = () => {
-    vaciarCarrito()
-    setMostrarConfirmacion(false)
-  }
-
-  const openModal = (turno) => {
-    // Updated openModal function
-    setSelectedTurno(turno)
   }
 
   return (
@@ -240,19 +206,8 @@ const CarritoReservas = () => {
           {isAuthenticated ? (
             <div>
               <p>
-                Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas
-                gracias!
+                Presione pagar para finalizar la reserva. Se enviará un mail con el detalle de la misma. ¡Muchas gracias!
               </p>
-              <button type="button" className="btn btn-success" onClick={comprarCarrito} disabled={comprando}>
-                {comprando ? (
-                  <>
-                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
-                    Procesando...
-                  </>
-                ) : (
-                  "Comprar"
-                )}
-              </button>
               <div id="wallet_container" style={{ marginTop: "20px" }}></div>
             </div>
           ) : (
@@ -270,6 +225,7 @@ const CarritoReservas = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={mostrarConfirmacion} onHide={() => setMostrarConfirmacion(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Vaciar carrito?</Modal.Title>
@@ -286,6 +242,7 @@ const CarritoReservas = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={mostrarConfirmacionEliminar} onHide={() => setMostrarConfirmacionEliminar(false)}>
         <Modal.Header closeButton>
           <Modal.Title>¿Eliminar turno?</Modal.Title>
@@ -302,6 +259,7 @@ const CarritoReservas = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={selectedTurno !== null} onHide={() => setSelectedTurno(null)}>
         <Modal.Header closeButton>
           <Modal.Title>Detalles del Turno</Modal.Title>
