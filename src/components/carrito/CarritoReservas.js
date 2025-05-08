@@ -25,6 +25,7 @@ const CarritoReservas = () => {
   const [email, setEmail] = useState(emailUsuario)
   const [selectedTurno, setSelectedTurno] = useState(null)
   const [comprando, setComprando] = useState(false)
+  const [compraRealizada, setCompraRealizada] = useState(false)
 
   const mostrarModalCliente = () => {
     if (carrito.length === 0) {
@@ -143,7 +144,9 @@ const CarritoReservas = () => {
     }
 
     if (turnosCarrito.length === 0) {
-      return <div className="no-items">No hay turnos en el carrito</div>
+      return  <div className="alert alert-primary" role="alert">
+                No hay turnos en el carrito. 
+              </div>
     }
 
     return (
@@ -190,6 +193,12 @@ const CarritoReservas = () => {
     )
   }
 
+  // Resetear el estado de compra al cerrar el modal
+  const handleCloseModal = () => {
+    setMostrarModal(false)
+    setCompraRealizada(false) // Resetear el estado cuando se cierra el modal
+  }
+
   return (
     <div className="carrito-reservas-container">
       <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Carrito de reservas</h2>
@@ -207,7 +216,7 @@ const CarritoReservas = () => {
       </Card.Body>
 
       {/* Modal de compra */}
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
+      <Modal show={mostrarModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Gestionar reserva</Modal.Title>
         </Modal.Header>
@@ -215,28 +224,30 @@ const CarritoReservas = () => {
           {isAuthenticated ? (
             <div>
               <p>Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma.</p>
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={comprarCarrito}
-                disabled={comprando}
-              >
-                {comprando ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                      className="me-2"
-                    />
-                    Procesando...
-                  </>
-                ) : (
-                  "Comprar"
-                )}
-              </button>
+              {!compraRealizada && (
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={comprarCarrito}
+                  disabled={comprando}
+                >
+                  {comprando ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        className="me-2"
+                      />
+                      Procesando...
+                    </>
+                  ) : (
+                    "Comprar"
+                  )}
+                </button>
+              )}
               <div id="wallet_spinner" className="text-center my-3" style={{ display: "none" }}>
                 <Spinner animation="border" role="status" />
                 <div>Cargando botón de pago...</div>
@@ -253,7 +264,7 @@ const CarritoReservas = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+          <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
         </Modal.Footer>
