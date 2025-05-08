@@ -96,6 +96,7 @@ const CarritoReservas = () => {
         })
         .then(() => {
           document.getElementById("wallet_spinner").style.display = "none"
+          setCompraRealizada(true)
         })
         .catch((error) => {
           document.getElementById("wallet_spinner").style.display = "none"
