@@ -9,6 +9,7 @@ import ReservaModal from './ReservaModal';
 import ConfirmCancelModal from './ConfirmCancelModal';
 import { Table, Button, Badge, Spinner, Modal } from "react-bootstrap"
 import MercadoPagoWallet from '../MercadoPago/MercadoPagoWallet.jsx';
+import Swal from "sweetalert2"
 
 const Reservas = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
@@ -78,9 +79,14 @@ const Reservas = () => {
         throw new Error('Error al cancelar la reserva');
       }
 
-      setAlert('Reserva cancelada exitosamente');
-      fetchReservas(user.email); // Actualiza el estado con el backend
-      setTimeout(() => setAlert(''), 3000);
+      Swal.fire({
+        icon: "success",
+        title: "¡Reserva cancelada exitosamente!",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+
+      fetchReservas(user.email)
     } catch (error) {
       console.error('Error al cancelar la reserva:', error);
       setAlert('Error al cancelar la reserva');
@@ -168,10 +174,14 @@ const Reservas = () => {
       return preference_id
     } catch (error) {
       console.error("Error al procesar el pago:", error)
-      setAlert("Error al procesar el pago")
-      setTimeout(() => setAlert(""), 3000)
+      Swal.fire({
+        icon: "error",
+        title: "Error al procesar el pago",
+        text: error.message,
+      })
+      throw error
     } finally {
-      setPagando(null)
+      setPagando(false)
     }
   }
 
@@ -352,7 +362,7 @@ const Reservas = () => {
 
               <MercadoPagoWallet
                 onProcessPayment={procesarPago}
-                procesando={pagando !== null}
+                procesando={pagando}
                 pagoRealizado={pagoRealizado}
                 buttonText="Proceder al Pago"
               />
