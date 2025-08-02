@@ -78,7 +78,7 @@ const MercadoPagoWallet = ({
 
       <div id="wallet_spinner" className="text-center my-3" style={{ display: "none" }}>
         <Spinner animation="border" role="status" />
-        <div>Cargando botón de pago...</div>
+        <div>Cargando cupón de pago...</div>
       </div>
       <div id="wallet_container" style={{ marginTop: "20px" }}></div>
     </div>
