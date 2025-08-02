@@ -150,27 +150,33 @@ const Reservas = () => {
   }
 
   const procesarPago = async () => {
-    if (!selectedReservaForPayment) return
+    if (!selectedReservaForPayment) return null
 
     try {
-      setPagando(selectedReservaForPayment.reserva.id)
+      setPagando(true)
+      console.log("Procesando pago para reserva ID:", selectedReservaForPayment.reserva.id)
 
-      const response = await fetch(`${API}reservas/pagar/${selectedReservaForPayment.reserva.id}`, {
+      // Llamar al método createPreference que ya tienes implementado
+      const response = await fetch(`${API}mercadopago/preference/${selectedReservaForPayment.reserva.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email_cliente: user.email,
-          precio_total: calcularPrecioTotal(selectedReservaForPayment.detalle),
-        }),
       })
 
       if (!response.ok) {
-        throw new Error("Error al procesar el pago")
+        const errorData = await response.json()
+        console.error("Error response:", errorData)
+        throw new Error(errorData.message || "Error al procesar el pago")
       }
 
       const { preference_id } = await response.json()
+      console.log("Preference ID obtenido:", preference_id)
+
+      if (!preference_id) {
+        throw new Error("No se recibió preference_id del servidor")
+      }
+
       return preference_id
     } catch (error) {
       console.error("Error al procesar el pago:", error)
@@ -182,7 +188,7 @@ const Reservas = () => {
       throw error
     } finally {
       setPagando(false)
-    }
+     }
   }
 
   const handleClosePaymentModal = () => {
@@ -246,10 +252,10 @@ const Reservas = () => {
                             variant="success"
                             size="sm"
                             onClick={() => handlePagar(reserva)}
-                            disabled={pagando === reserva.reserva.id}
+                            disabled={pagando}
                             className="w-100 w-sm-auto"
                           >
-                            {pagando === reserva.reserva.id ? (
+                            {pagando ? (
                               <>
                                 <Spinner
                                   as="span"
