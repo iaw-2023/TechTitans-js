@@ -1,3 +1,4 @@
+
 import { useContext, useState, useEffect, useCallback } from "react"
 import { API } from "../../config.js"
 import { Card, Modal, Button, Table, Spinner } from "react-bootstrap"
@@ -7,10 +8,7 @@ import { CarritoContexto } from "../../context/ShoppingCartContext.jsx"
 import Swal from "sweetalert2"
 import "./CarritoReservas.css"
 import { useAuth0 } from "@auth0/auth0-react"
-
-const mp = new window.MercadoPago("APP_USR-0144850f-6a77-4ee3-b6bf-390c8bbe3cf7", {
-  locale: "es-AR",
-})
+import MercadoPagoWallet from "../MercadoPago/MercadoPagoWallet.jsx"
 
 const CarritoReservas = () => {
   const { vaciarCarrito, carrito, eliminarElemento } = useContext(CarritoContexto)
@@ -89,20 +87,6 @@ const CarritoReservas = () => {
 
       const { preference_id } = await response.json()
 
-      document.getElementById("wallet_spinner").style.display = "block"
-      mp.bricks()
-        .create("wallet", "wallet_container", {
-          initialization: { preferenceId: preference_id },
-        })
-        .then(() => {
-          document.getElementById("wallet_spinner").style.display = "none"
-          setCompraRealizada(true)
-        })
-        .catch((error) => {
-          document.getElementById("wallet_spinner").style.display = "none"
-          console.error("Error al inicializar el Brick:", error)
-        })
-
       Swal.fire({
         icon: "success",
         title: "¡Reserva realizada correctamente!",
@@ -111,6 +95,7 @@ const CarritoReservas = () => {
       })
 
       vaciarCarrito()
+      return preference_id
     } catch (error) {
       console.error("Error al realizar la compra:", error)
       Swal.fire({
@@ -225,35 +210,13 @@ const CarritoReservas = () => {
           {isAuthenticated ? (
             <div>
               <p>Presione comprar para finalizar la reserva. Se enviará un mail con el detalle de la misma.</p>
-              {!compraRealizada && (
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={comprarCarrito}
-                  disabled={comprando}
-                >
-                  {comprando ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                        className="me-2"
-                      />
-                      Procesando...
-                    </>
-                  ) : (
-                    "Comprar"
-                  )}
-                </button>
-              )}
-              <div id="wallet_spinner" className="text-center my-3" style={{ display: "none" }}>
-                <Spinner animation="border" role="status" />
-                <div>Cargando botón de pago...</div>
-              </div>
-              <div id="wallet_container" style={{ marginTop: "20px" }}></div>
+
+              <MercadoPagoWallet
+                onProcessPayment={comprarCarrito}
+                procesando={comprando}
+                pagoRealizado={compraRealizada}
+                buttonText="Comprar"
+              />
             </div>
           ) : (
             <div>
