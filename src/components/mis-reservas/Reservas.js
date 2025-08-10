@@ -299,34 +299,6 @@ const Reservas = () => {
                           </Button>
                         </>
                       )}
-                      {reserva.reserva.estado === "Aceptado" && (
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => {
-                            setCancelando(reserva.reserva.id)
-                            confirmarCancelacion(reserva.reserva)
-                          }}
-                          disabled={cancelando === reserva.reserva.id}
-                          className="w-100 w-sm-auto"
-                        >
-                          {cancelando === reserva.reserva.id ? (
-                            <>
-                              <Spinner
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                                className="me-2"
-                              />
-                              Cancelando...
-                            </>
-                          ) : (
-                            "Cancelar Reserva"
-                          )}
-                        </Button>
-                      )}
                     </div>
                   </td>
                 </tr>
