@@ -101,7 +101,6 @@ const TurnosDisponibles = () => {
         categoria_nombre: categorias[selectedTurno.cancha.id_categoria],
       },
     }
-
     agregarItem(turnoData.id, turnoData)
     setSelectedTurno(null)
   }
