@@ -66,16 +66,18 @@ const TurnosDisponibles = () => {
   }, [categoriaId, selectedFecha])
 
   const handleFechaChange = (e) => {
-    const selectedDate = new Date(e.target.value)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const value = e.target.value; // "YYYY-MM-DD"
 
-    if (selectedDate >= today) {
-      setSelectedFecha(e.target.value)
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    const todayFormatted = today.toISOString().split("T")[0];
+
+    if (value >= todayFormatted) {
+      setSelectedFecha(value);
     } else {
-      alert("No puedes seleccionar fechas pasadas.")
+      alert("No puedes seleccionar fechas pasadas.");
     }
-  }
+  };
 
   const toggleTurnoSeleccionado = (turno) => {
     if (!turno || !turno.id) {
